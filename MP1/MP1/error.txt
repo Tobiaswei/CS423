@@ -1,0 +1,63 @@
+rm -f userapp *~ *.ko *.o *.mod.c Module.symvers modules.order
+make -C /lib/modules/4.4.0-31-generic/build M=/home/tobias/MP/CS423/MP1 modules
+make[1]: Entering directory '/usr/src/linux-headers-4.4.0-31-generic'
+  CC [M]  /home/tobias/MP/CS423/MP1/mp1.o
+/home/tobias/MP/CS423/MP1/mp1.c: In function ‘mp1_write’:
+/home/tobias/MP/CS423/MP1/mp1.c:43:4: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
+    int _pid;
+    ^
+/home/tobias/MP/CS423/MP1/mp1.c:47:4: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
+    unsigned long _cpu_time;
+    ^
+/home/tobias/MP/CS423/MP1/mp1.c:58:16: error: ‘my_lock’ undeclared (first use in this function)
+     spin_lock(&my_lock);
+                ^
+/home/tobias/MP/CS423/MP1/mp1.c:58:16: note: each undeclared identifier is reported only once for each function it appears in
+/home/tobias/MP/CS423/MP1/mp1.c:47:18: warning: unused variable ‘_cpu_time’ [-Wunused-variable]
+    unsigned long _cpu_time;
+                  ^
+/home/tobias/MP/CS423/MP1/mp1.c: In function ‘mp1_read’:
+/home/tobias/MP/CS423/MP1/mp1.c:68:3: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
+   struct list_node* my_obj;
+   ^
+/home/tobias/MP/CS423/MP1/mp1.c:69:14: error: ‘my_lock’ undeclared (first use in this function)
+   spin_lock(&my_lock);
+              ^
+/home/tobias/MP/CS423/MP1/mp1.c: In function ‘my_wq_function’:
+/home/tobias/MP/CS423/MP1/mp1.c:91:14: error: ‘my_lock’ undeclared (first use in this function)
+   spin_lock(&my_lock); 
+              ^
+/home/tobias/MP/CS423/MP1/mp1.c:99:13: warning: ‘return’ with a value, in function returning void
+      return -1; 
+             ^
+/home/tobias/MP/CS423/MP1/mp1.c: At top level:
+/home/tobias/MP/CS423/MP1/mp1.c:115:9: warning: initialization from incompatible pointer type [-Wincompatible-pointer-types]
+  .write=mp1_write,
+         ^
+/home/tobias/MP/CS423/MP1/mp1.c:115:9: note: (near initialization for ‘mp1_file.write’)
+/home/tobias/MP/CS423/MP1/mp1.c: In function ‘my_timer_callback’:
+/home/tobias/MP/CS423/MP1/mp1.c:126:4: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
+    struct work_struct *work=(struct work_struct *)kmalloc(sizeof(struct work_struct),GFP_KERNEL);
+    ^
+/home/tobias/MP/CS423/MP1/mp1.c: In function ‘mp1_init’:
+/home/tobias/MP/CS423/MP1/mp1.c:138:4: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
+    int ret;
+    ^
+/home/tobias/MP/CS423/MP1/mp1.c: In function ‘mp1_exit’:
+/home/tobias/MP/CS423/MP1/mp1.c:162:4: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
+    static struct list_head *pos,*q;
+    ^
+/home/tobias/MP/CS423/MP1/mp1.c:163:28: warning: unused variable ‘head’ [-Wunused-variable]
+    static struct list_node head;
+                            ^
+/home/tobias/MP/CS423/MP1/mp1.c: In function ‘mp1_write’:
+/home/tobias/MP/CS423/MP1/mp1.c:62:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+scripts/Makefile.build:264: recipe for target '/home/tobias/MP/CS423/MP1/mp1.o' failed
+make[2]: *** [/home/tobias/MP/CS423/MP1/mp1.o] Error 1
+Makefile:1403: recipe for target '_module_/home/tobias/MP/CS423/MP1' failed
+make[1]: *** [_module_/home/tobias/MP/CS423/MP1] Error 2
+make[1]: Leaving directory '/usr/src/linux-headers-4.4.0-31-generic'
+Makefile:15: recipe for target 'modules' failed
+make: *** [modules] Error 2
