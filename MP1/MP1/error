@@ -1,0 +1,56 @@
+rm -f userapp *~ *.ko *.o *.mod.c Module.symvers modules.order
+make -C /lib/modules/4.15.0-45-generic/build M=/home/yuguang2/MP1/MP1 modules
+make[1]: Entering directory '/usr/src/linux-headers-4.15.0-45-generic'
+  CC [M]  /home/yuguang2/MP1/MP1/mp1.o
+In file included from /home/yuguang2/MP1/MP1/mp1.c:2:0:
+./arch/x86/include/asm/uaccess.h:30:27: error: unknown type name 'mm_segment_t'
+ static inline void set_fs(mm_segment_t fs)
+                           ^
+/home/yuguang2/MP1/MP1/mp1.c: In function 'mp1_write':
+/home/yuguang2/MP1/MP1/mp1.c:41:4: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
+    int _pid;
+    ^
+/home/yuguang2/MP1/MP1/mp1.c:45:4: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
+    unsigned long _cpu_time;
+    ^
+/home/yuguang2/MP1/MP1/mp1.c:47:7: error: implicit declaration of function 'copy_from_user' [-Werror=implicit-function-declaration]
+    if(copy_from_user(pid_,buff,len)){
+       ^
+/home/yuguang2/MP1/MP1/mp1.c:45:18: warning: unused variable '_cpu_time' [-Wunused-variable]
+    unsigned long _cpu_time;
+                  ^
+/home/yuguang2/MP1/MP1/mp1.c: In function 'mp1_read':
+/home/yuguang2/MP1/MP1/mp1.c:67:3: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
+   struct list_node* my_obj;
+   ^
+/home/yuguang2/MP1/MP1/mp1.c:75:11: error: implicit declaration of function 'copy_to_user' [-Werror=implicit-function-declaration]
+        if(copy_to_user(buffer + *pos ,my_buff,strlen(my_buff)+1)){
+           ^
+/home/yuguang2/MP1/MP1/mp1.c: At top level:
+/home/yuguang2/MP1/MP1/mp1.c:117:9: error: initialization from incompatible pointer type [-Werror=incompatible-pointer-types]
+  .write=mp1_write,
+         ^
+/home/yuguang2/MP1/MP1/mp1.c:117:9: note: (near initialization for 'mp1_file.write')
+/home/yuguang2/MP1/MP1/mp1.c: In function 'my_timer_callback':
+/home/yuguang2/MP1/MP1/mp1.c:129:4: error: implicit declaration of function 'setup_timer' [-Werror=implicit-function-declaration]
+    setup_timer(&my_timer,my_timer_callback,0);
+    ^
+/home/yuguang2/MP1/MP1/mp1.c: In function 'mp1_init':
+/home/yuguang2/MP1/MP1/mp1.c:139:4: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
+    int ret;
+    ^
+/home/yuguang2/MP1/MP1/mp1.c: In function 'mp1_exit':
+/home/yuguang2/MP1/MP1/mp1.c:161:4: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
+    static struct list_head *pos,*q;
+    ^
+/home/yuguang2/MP1/MP1/mp1.c:162:28: warning: unused variable 'head' [-Wunused-variable]
+    static struct list_node head;
+                            ^
+cc1: some warnings being treated as errors
+scripts/Makefile.build:339: recipe for target '/home/yuguang2/MP1/MP1/mp1.o' failed
+make[2]: *** [/home/yuguang2/MP1/MP1/mp1.o] Error 1
+Makefile:1551: recipe for target '_module_/home/yuguang2/MP1/MP1' failed
+make[1]: *** [_module_/home/yuguang2/MP1/MP1] Error 2
+make[1]: Leaving directory '/usr/src/linux-headers-4.15.0-45-generic'
+Makefile:15: recipe for target 'modules' failed
+make: *** [modules] Error 2

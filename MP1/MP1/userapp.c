@@ -1,10 +1,4 @@
 #include "userapp.h"
-<<<<<<< HEAD
-
-int main(int argc, char* argv[])
-{
-	return 0;
-=======
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
@@ -60,5 +54,4 @@ int main(int argc, char* argv[])
      // cat_function();
       execlp("cat","cat","/proc/mp1/status",NULL);
       return 0;
->>>>>>> 6a37b56e99551959fbc9c42882c6113fddced4b4
 }

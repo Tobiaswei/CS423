@@ -1,0 +1,7 @@
+First make file
+
+Second insmod mp1.ko
+
+Third ./userapp & ./userapp
+
+Finally, it will auto display the most recent cpu time when the execuition finished

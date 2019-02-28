@@ -1,17 +1,4 @@
 #define LINUX
-<<<<<<< HEAD
-
-#include <linux/module.h>
-#include <linux/kernel.h>
-#include "mp1_given.h"
-
-MODULE_LICENSE("GPL");
-MODULE_AUTHOR("Group_ID");
-MODULE_DESCRIPTION("CS-423 MP1");
-
-#define DEBUG 1
-
-=======
 #include<asm/uaccess.h>//(copy_from_user)
 #include <linux/module.h>
 #include <linux/kernel.h>
@@ -30,11 +17,11 @@ MODULE_DESCRIPTION("CS-423 MP1");
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("yuguang2");
 MODULE_DESCRIPTION("CS-423 MP1");
-static spinlock_t my_lock;// spin_lock
+static spinlock_t my_lock;
 #define DEBUG 1
 static struct proc_dir_entry *proc_dir;
 static struct proc_dir_entry *proc_entry;
-LIST_HEAD(new_list);//LIST marco to locate the head of the list
+LIST_HEAD(new_list);
 struct list_node{
 
    struct list_head my_list;
@@ -49,22 +36,20 @@ ssize_t mp1_write(struct file* flip, const char __user *buff,
 
                        unsigned long len,void *data)
 {
-   struct list_node *obj;//declare a pointe to my cutomized struct
-   obj= (struct list_node *) kmalloc(sizeof(struct list_node),GFP_KERNEL);
-   // dynamic allocate a struct memory 
+   struct list_node *obj;
+   obj= (struct list_node *) kmalloc(sizeof(struct list_node),GFP_KERNEL); 
    int _pid;
 
    char * pid_;
-   pid_= (char *) kmalloc(len+1,GFP_KERNEL);// allocate memory in kernel space
+   pid_= (char *) kmalloc(len+1,GFP_KERNEL);
    unsigned long _cpu_time;
    
    if(copy_from_user(pid_,buff,len)){
      
            return -ENOSPC;
-      }//from user space to kernel space. The lenght of buff is len
- 
-   // kstrtoint(pid_,10,&_pid);
-    sscanf(pid_,"%d",&_pid);//read the data from kernel buf 
+      }
+   kstrtoint(pid_,10,&_pid);
+
     printk("the value of pid is %d",_pid);
     obj->cpu_time=0;
     obj->pid=_pid;
@@ -78,18 +63,17 @@ ssize_t mp1_write(struct file* flip, const char __user *buff,
 static ssize_t mp1_read(struct file *file ,char __user *buffer, size_t count,loff_t *pos)
 { 
 
-  if(* pos>0) return 0;//otherwise it will trap in infinte loop
-  struct list_node* my_obj; //delcare pointer to struct
+  if(* pos>0) return 0;
+  struct list_node* my_obj;
   spin_lock(&my_lock);
   list_for_each_entry(my_obj,&new_list,my_list){
-       char my_buff[64];//static allocate memory in kernel 
+       char my_buff[64];
         sprintf(my_buff,"%d : %lu\n",my_obj->pid,my_obj->cpu_time);
         if(DEBUG) printk("pid is %d cpu time is %lu\n",my_obj->pid,my_obj->cpu_time);
         if(DEBUG) printk("my_buff is %s\n",my_buff);
 
-        if(copy_to_user(buffer + *pos ,my_buff,strlen(my_buff)+1)){
-       //first copy from kernel buff to user buffer with space 64
-         return -EFAULT;      
+       if(copy_to_user(buffer + *pos ,my_buff,strlen(my_buff)+1)){
+        return -EFAULT;      
         }
 
        *pos+=64;
@@ -106,8 +90,6 @@ static void my_wq_function(struct work_struct *work){
 //  spin_lock(&my_lock); 
  
    static struct list_head *pos,*q;
-
-// pay attention must use list_for_each_safe if we want to delete and free memory
   list_for_each_safe(pos,q,&new_list){
 
    unsigned long _cpu_time=0;
@@ -141,27 +123,20 @@ static const struct file_operations mp1_file={
 void my_timer_callback(unsigned long data)
 {
 //   int ret;
-    //first allocate memory for work queue
+    
    struct work_struct *work=(struct work_struct *)kmalloc(sizeof(struct work_struct),GFP_KERNEL);
    INIT_WORK((struct work_struct*)work,my_wq_function);
    queue_work(my_wq,(struct work_struct*)work);
 
    setup_timer(&my_timer,my_timer_callback,0);
-   mod_timer(&my_timer,jiffies+msecs_to_jiffies(5000));//5 second
+   mod_timer(&my_timer,jiffies+msecs_to_jiffies(5000));
 }
->>>>>>> 6a37b56e99551959fbc9c42882c6113fddced4b4
 // mp1_init - Called when module is loaded
 int __init mp1_init(void)
 {
    #ifdef DEBUG
    printk(KERN_ALERT "MP1 MODULE LOADING\n");
    #endif
-<<<<<<< HEAD
-   // Insert your code here ...
-   
-   
-   
-=======
    spin_lock_init(&my_lock);
    int ret;
    // Insert your code here ...
@@ -174,7 +149,6 @@ int __init mp1_init(void)
    setup_timer(&my_timer,my_timer_callback,0);
    ret=mod_timer(&my_timer,jiffies+msecs_to_jiffies(5000));
    if(ret) printk("Error in mod_timer\n");
->>>>>>> 6a37b56e99551959fbc9c42882c6113fddced4b4
    printk(KERN_ALERT "MP1 MODULE LOADED\n");
    return 0;   
 }
@@ -184,17 +158,6 @@ void __exit mp1_exit(void)
 {
    #ifdef DEBUG
    printk(KERN_ALERT "MP1 MODULE UNLOADING\n");
-<<<<<<< HEAD
-   #endif
-   // Insert your code here ...
-   
-   
-
-   printk(KERN_ALERT "MP1 MODULE UNLOADED\n");
-}
-
-// Register init and exit funtions
-=======
    #endif  
   // Insert your code here ...
    static struct list_head *pos,*q;
@@ -213,6 +176,5 @@ void __exit mp1_exit(void)
     }
    printk(KERN_ALERT "MP1 MODULE UNLOADED\n");
 }// Register init and exit funtions
->>>>>>> 6a37b56e99551959fbc9c42882c6113fddced4b4
 module_init(mp1_init);
 module_exit(mp1_exit);
