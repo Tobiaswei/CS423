@@ -2,111 +2,6 @@ rm -f userapp *~ *.ko *.o *.mod.c Module.symvers modules.order
 make -C /lib/modules/4.4.0-31-generic/build M=/home/tobias/MP/CS423/MP2 modules
 make[1]: Entering directory '/usr/src/linux-headers-4.4.0-31-generic'
   CC [M]  /home/tobias/MP/CS423/MP2/mp2.o
-/home/tobias/MP/CS423/MP2/mp2.c:51:26: error: ‘curr_task’ redeclared as different kind of symbol
- struct mp2_task_struct * curr_task;// global variable for current running task!
-                          ^
-In file included from /home/tobias/MP/CS423/MP2/mp2_given.h:5:0,
-                 from /home/tobias/MP/CS423/MP2/mp2.c:6:
-include/linux/sched.h:2399:28: note: previous declaration of ‘curr_task’ was here
- extern struct task_struct *curr_task(int cpu);
-                            ^
-In file included from ./arch/x86/include/asm/atomic.h:8:0,
-                 from include/linux/atomic.h:4,
-                 from ./arch/x86/include/asm/thread_info.h:53,
-                 from include/linux/thread_info.h:54,
-                 from ./arch/x86/include/asm/uaccess.h:8,
-                 from /home/tobias/MP/CS423/MP2/mp2.c:2:
-/home/tobias/MP/CS423/MP2/mp2.c: In function ‘registration’:
-include/linux/sched.h:294:20: error: request for member ‘state’ in something not a structure or union
-  smp_store_mb((tsk)->state, (state_value))
-                    ^
-./arch/x86/include/asm/cmpxchg.h:43:24: note: in definition of macro ‘__xchg_op’
-          __typeof__ (*(ptr)) __ret = (arg);   \
-                        ^
-./arch/x86/include/asm/barrier.h:38:45: note: in expansion of macro ‘xchg’
- #define smp_store_mb(var, value) do { (void)xchg(&var, value); } while (0)
-                                             ^
-include/linux/sched.h:294:2: note: in expansion of macro ‘smp_store_mb’
-  smp_store_mb((tsk)->state, (state_value))
-  ^
-/home/tobias/MP/CS423/MP2/mp2.c:68:9: note: in expansion of macro ‘set_task_state’
-         set_task_state(&obj->task, TASK_INTERRUPTIBLE);
-         ^
-include/linux/sched.h:294:20: error: request for member ‘state’ in something not a structure or union
-  smp_store_mb((tsk)->state, (state_value))
-                    ^
-./arch/x86/include/asm/cmpxchg.h:44:20: note: in definition of macro ‘__xchg_op’
-   switch (sizeof(*(ptr))) {    \
-                    ^
-./arch/x86/include/asm/barrier.h:38:45: note: in expansion of macro ‘xchg’
- #define smp_store_mb(var, value) do { (void)xchg(&var, value); } while (0)
-                                             ^
-include/linux/sched.h:294:2: note: in expansion of macro ‘smp_store_mb’
-  smp_store_mb((tsk)->state, (state_value))
-  ^
-/home/tobias/MP/CS423/MP2/mp2.c:68:9: note: in expansion of macro ‘set_task_state’
-         set_task_state(&obj->task, TASK_INTERRUPTIBLE);
-         ^
-include/linux/sched.h:294:20: error: request for member ‘state’ in something not a structure or union
-  smp_store_mb((tsk)->state, (state_value))
-                    ^
-./arch/x86/include/asm/cmpxchg.h:47:35: note: in definition of macro ‘__xchg_op’
-           : "+q" (__ret), "+m" (*(ptr)) \
-                                   ^
-./arch/x86/include/asm/barrier.h:38:45: note: in expansion of macro ‘xchg’
- #define smp_store_mb(var, value) do { (void)xchg(&var, value); } while (0)
-                                             ^
-include/linux/sched.h:294:2: note: in expansion of macro ‘smp_store_mb’
-  smp_store_mb((tsk)->state, (state_value))
-  ^
-/home/tobias/MP/CS423/MP2/mp2.c:68:9: note: in expansion of macro ‘set_task_state’
-         set_task_state(&obj->task, TASK_INTERRUPTIBLE);
-         ^
-include/linux/sched.h:294:20: error: request for member ‘state’ in something not a structure or union
-  smp_store_mb((tsk)->state, (state_value))
-                    ^
-./arch/x86/include/asm/cmpxchg.h:52:35: note: in definition of macro ‘__xchg_op’
-           : "+r" (__ret), "+m" (*(ptr)) \
-                                   ^
-./arch/x86/include/asm/barrier.h:38:45: note: in expansion of macro ‘xchg’
- #define smp_store_mb(var, value) do { (void)xchg(&var, value); } while (0)
-                                             ^
-include/linux/sched.h:294:2: note: in expansion of macro ‘smp_store_mb’
-  smp_store_mb((tsk)->state, (state_value))
-  ^
-/home/tobias/MP/CS423/MP2/mp2.c:68:9: note: in expansion of macro ‘set_task_state’
-         set_task_state(&obj->task, TASK_INTERRUPTIBLE);
-         ^
-include/linux/sched.h:294:20: error: request for member ‘state’ in something not a structure or union
-  smp_store_mb((tsk)->state, (state_value))
-                    ^
-./arch/x86/include/asm/cmpxchg.h:57:35: note: in definition of macro ‘__xchg_op’
-           : "+r" (__ret), "+m" (*(ptr)) \
-                                   ^
-./arch/x86/include/asm/barrier.h:38:45: note: in expansion of macro ‘xchg’
- #define smp_store_mb(var, value) do { (void)xchg(&var, value); } while (0)
-                                             ^
-include/linux/sched.h:294:2: note: in expansion of macro ‘smp_store_mb’
-  smp_store_mb((tsk)->state, (state_value))
-  ^
-/home/tobias/MP/CS423/MP2/mp2.c:68:9: note: in expansion of macro ‘set_task_state’
-         set_task_state(&obj->task, TASK_INTERRUPTIBLE);
-         ^
-include/linux/sched.h:294:20: error: request for member ‘state’ in something not a structure or union
-  smp_store_mb((tsk)->state, (state_value))
-                    ^
-./arch/x86/include/asm/cmpxchg.h:62:35: note: in definition of macro ‘__xchg_op’
-           : "+r" (__ret), "+m" (*(ptr)) \
-                                   ^
-./arch/x86/include/asm/barrier.h:38:45: note: in expansion of macro ‘xchg’
- #define smp_store_mb(var, value) do { (void)xchg(&var, value); } while (0)
-                                             ^
-include/linux/sched.h:294:2: note: in expansion of macro ‘smp_store_mb’
-  smp_store_mb((tsk)->state, (state_value))
-  ^
-/home/tobias/MP/CS423/MP2/mp2.c:68:9: note: in expansion of macro ‘set_task_state’
-         set_task_state(&obj->task, TASK_INTERRUPTIBLE);
-         ^
 In file included from include/linux/workqueue.h:8:0,
                  from include/linux/srcu.h:34,
                  from include/linux/notifier.h:15,
@@ -116,276 +11,104 @@ In file included from include/linux/workqueue.h:8:0,
                  from include/linux/kmod.h:22,
                  from include/linux/module.h:13,
                  from /home/tobias/MP/CS423/MP2/mp2.c:3:
-/home/tobias/MP/CS423/MP2/mp2.c:72:38: error: ‘my_timer_callback’ undeclared (first use in this function)
-         setup_timer(&obj->task_timer,my_timer_callback,obj);
-                                      ^
-include/linux/timer.h:135:25: note: in definition of macro ‘__setup_timer’
-   (_timer)->function = (_fn);    \
-                         ^
-/home/tobias/MP/CS423/MP2/mp2.c:72:9: note: in expansion of macro ‘setup_timer’
-         setup_timer(&obj->task_timer,my_timer_callback,obj);
-         ^
-/home/tobias/MP/CS423/MP2/mp2.c:72:38: note: each undeclared identifier is reported only once for each function it appears in
-         setup_timer(&obj->task_timer,my_timer_callback,obj);
-                                      ^
-include/linux/timer.h:135:25: note: in definition of macro ‘__setup_timer’
-   (_timer)->function = (_fn);    \
-                         ^
-/home/tobias/MP/CS423/MP2/mp2.c:72:9: note: in expansion of macro ‘setup_timer’
-         setup_timer(&obj->task_timer,my_timer_callback,obj);
-         ^
+/home/tobias/MP/CS423/MP2/mp2.c: In function ‘registration’:
 include/linux/timer.h:136:18: warning: assignment makes integer from pointer without a cast [-Wint-conversion]
    (_timer)->data = (_data);    \
                   ^
 include/linux/timer.h:147:2: note: in expansion of macro ‘__setup_timer’
   __setup_timer((timer), (fn), (data), 0)
   ^
-/home/tobias/MP/CS423/MP2/mp2.c:72:9: note: in expansion of macro ‘setup_timer’
+/home/tobias/MP/CS423/MP2/mp2.c:80:9: note: in expansion of macro ‘setup_timer’
          setup_timer(&obj->task_timer,my_timer_callback,obj);
          ^
 /home/tobias/MP/CS423/MP2/mp2.c: In function ‘mp2_write’:
-/home/tobias/MP/CS423/MP2/mp2.c:105:3: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
+/home/tobias/MP/CS423/MP2/mp2.c:113:3: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
    char * command;
    ^
-/home/tobias/MP/CS423/MP2/mp2.c:109:3: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
+/home/tobias/MP/CS423/MP2/mp2.c:117:3: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
    unsigned int pid;
    ^
-/home/tobias/MP/CS423/MP2/mp2.c:124:3: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
+/home/tobias/MP/CS423/MP2/mp2.c:132:3: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
    char * delim=","; //split by ','
    ^
-/home/tobias/MP/CS423/MP2/mp2.c:127:3: warning: suggest parentheses around assignment used as truth value [-Wparentheses]
+/home/tobias/MP/CS423/MP2/mp2.c:135:3: warning: suggest parentheses around assignment used as truth value [-Wparentheses]
    while(token[i++]=strsep(&command,delim)){
    ^
-/home/tobias/MP/CS423/MP2/mp2.c:135:25: warning: format ‘%lu’ expects argument of type ‘long unsigned int *’, but argument 3 has type ‘unsigned int *’ [-Wformat=]
+/home/tobias/MP/CS423/MP2/mp2.c:143:25: warning: format ‘%lu’ expects argument of type ‘long unsigned int *’, but argument 3 has type ‘unsigned int *’ [-Wformat=]
          sscanf(token[1],"%lu",&pid);
                          ^
-/home/tobias/MP/CS423/MP2/mp2.c:141:26: warning: format ‘%lu’ expects argument of type ‘long unsigned int’, but argument 2 has type ‘unsigned int’ [-Wformat=]
+/home/tobias/MP/CS423/MP2/mp2.c:149:26: warning: format ‘%lu’ expects argument of type ‘long unsigned int’, but argument 2 has type ‘unsigned int’ [-Wformat=]
          if(DEBUG) printk("Registration:the value of pid is %lu period is %lu computation time is %lu\n",pid, period,slice);
                           ^
-/home/tobias/MP/CS423/MP2/mp2.c:149:26: warning: format ‘%lu’ expects argument of type ‘long unsigned int *’, but argument 3 has type ‘unsigned int *’ [-Wformat=]
+/home/tobias/MP/CS423/MP2/mp2.c:157:26: warning: format ‘%lu’ expects argument of type ‘long unsigned int *’, but argument 3 has type ‘unsigned int *’ [-Wformat=]
           sscanf(token[1],"%lu",&pid);
                           ^
-/home/tobias/MP/CS423/MP2/mp2.c:151:27: warning: format ‘%lu’ expects argument of type ‘long unsigned int’, but argument 2 has type ‘unsigned int’ [-Wformat=]
+/home/tobias/MP/CS423/MP2/mp2.c:159:27: warning: format ‘%lu’ expects argument of type ‘long unsigned int’, but argument 2 has type ‘unsigned int’ [-Wformat=]
           if(DEBUG) printk("YIELD: the value of pid is %lu\n",pid);
                            ^
-/home/tobias/MP/CS423/MP2/mp2.c:156:26: warning: format ‘%lu’ expects argument of type ‘long unsigned int *’, but argument 3 has type ‘unsigned int *’ [-Wformat=]
+/home/tobias/MP/CS423/MP2/mp2.c:164:26: warning: format ‘%lu’ expects argument of type ‘long unsigned int *’, but argument 3 has type ‘unsigned int *’ [-Wformat=]
           sscanf(token[1],"%lu",&pid);
                           ^
-/home/tobias/MP/CS423/MP2/mp2.c:158:27: warning: format ‘%lu’ expects argument of type ‘long unsigned int’, but argument 2 has type ‘unsigned int’ [-Wformat=]
+/home/tobias/MP/CS423/MP2/mp2.c:166:27: warning: format ‘%lu’ expects argument of type ‘long unsigned int’, but argument 2 has type ‘unsigned int’ [-Wformat=]
           if(DEBUG) printk("Deregistrarion: the value of pid is %lu\n",pid);
                            ^
 /home/tobias/MP/CS423/MP2/mp2.c: In function ‘mp2_read’:
-/home/tobias/MP/CS423/MP2/mp2.c:175:3: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
+/home/tobias/MP/CS423/MP2/mp2.c:183:3: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
    struct mp2_task_struct* my_obj;
    ^
-/home/tobias/MP/CS423/MP2/mp2.c:179:25: warning: format ‘%lu’ expects argument of type ‘long unsigned int’, but argument 3 has type ‘unsigned int’ [-Wformat=]
+/home/tobias/MP/CS423/MP2/mp2.c:187:25: warning: format ‘%lu’ expects argument of type ‘long unsigned int’, but argument 3 has type ‘unsigned int’ [-Wformat=]
          sprintf(my_buff,"%lu : %lu  :%lu\n",my_obj->pid,my_obj->relative_period,my_obj->slice);
                          ^
-/home/tobias/MP/CS423/MP2/mp2.c:180:26: warning: format ‘%lu’ expects argument of type ‘long unsigned int’, but argument 2 has type ‘unsigned int’ [-Wformat=]
+/home/tobias/MP/CS423/MP2/mp2.c:188:26: warning: format ‘%lu’ expects argument of type ‘long unsigned int’, but argument 2 has type ‘unsigned int’ [-Wformat=]
          if(DEBUG) printk("pid is %lu period is %lu computation time %lu\n",my_obj->pid,my_obj->relative_period,my_obj->slice);
                           ^
-/home/tobias/MP/CS423/MP2/mp2.c: In function ‘yeild’:
-/home/tobias/MP/CS423/MP2/mp2.c:206:10: error: ‘obj’ undeclared (first use in this function)
-       if(obj->next_period < jiffies) 
-          ^
-/home/tobias/MP/CS423/MP2/mp2.c:208:33: error: implicit declaration of function ‘mesecs_to_jiffies’ [-Werror=implicit-function-declaration]
-        obj->next_period=jiffies+mesecs_to_jiffies(obj->relative_period);
-                                 ^
-/home/tobias/MP/CS423/MP2/mp2.c:220:31: error: ‘curr’ undeclared (first use in this function)
-        curr_task->next_period=curr->next_period+msecs_to_jiffies(relative_period);
-                               ^
-/home/tobias/MP/CS423/MP2/mp2.c:220:66: error: ‘relative_period’ undeclared (first use in this function)
-        curr_task->next_period=curr->next_period+msecs_to_jiffies(relative_period);
-                                                                  ^
-In file included from ./arch/x86/include/asm/atomic.h:8:0,
-                 from include/linux/atomic.h:4,
-                 from ./arch/x86/include/asm/thread_info.h:53,
-                 from include/linux/thread_info.h:54,
-                 from ./arch/x86/include/asm/uaccess.h:8,
-                 from /home/tobias/MP/CS423/MP2/mp2.c:2:
-include/linux/sched.h:294:20: error: request for member ‘state’ in something not a structure or union
-  smp_store_mb((tsk)->state, (state_value))
-                    ^
-./arch/x86/include/asm/cmpxchg.h:43:24: note: in definition of macro ‘__xchg_op’
-          __typeof__ (*(ptr)) __ret = (arg);   \
-                        ^
-./arch/x86/include/asm/barrier.h:38:45: note: in expansion of macro ‘xchg’
- #define smp_store_mb(var, value) do { (void)xchg(&var, value); } while (0)
-                                             ^
-include/linux/sched.h:294:2: note: in expansion of macro ‘smp_store_mb’
-  smp_store_mb((tsk)->state, (state_value))
-  ^
-/home/tobias/MP/CS423/MP2/mp2.c:224:8: note: in expansion of macro ‘set_task_state’
-        set_task_state(&(curr_task->task),TASK_UNINTERRUPTIBLE);
-        ^
-include/linux/sched.h:294:20: error: request for member ‘state’ in something not a structure or union
-  smp_store_mb((tsk)->state, (state_value))
-                    ^
-./arch/x86/include/asm/cmpxchg.h:44:20: note: in definition of macro ‘__xchg_op’
-   switch (sizeof(*(ptr))) {    \
-                    ^
-./arch/x86/include/asm/barrier.h:38:45: note: in expansion of macro ‘xchg’
- #define smp_store_mb(var, value) do { (void)xchg(&var, value); } while (0)
-                                             ^
-include/linux/sched.h:294:2: note: in expansion of macro ‘smp_store_mb’
-  smp_store_mb((tsk)->state, (state_value))
-  ^
-/home/tobias/MP/CS423/MP2/mp2.c:224:8: note: in expansion of macro ‘set_task_state’
-        set_task_state(&(curr_task->task),TASK_UNINTERRUPTIBLE);
-        ^
-include/linux/sched.h:294:20: error: request for member ‘state’ in something not a structure or union
-  smp_store_mb((tsk)->state, (state_value))
-                    ^
-./arch/x86/include/asm/cmpxchg.h:47:35: note: in definition of macro ‘__xchg_op’
-           : "+q" (__ret), "+m" (*(ptr)) \
-                                   ^
-./arch/x86/include/asm/barrier.h:38:45: note: in expansion of macro ‘xchg’
- #define smp_store_mb(var, value) do { (void)xchg(&var, value); } while (0)
-                                             ^
-include/linux/sched.h:294:2: note: in expansion of macro ‘smp_store_mb’
-  smp_store_mb((tsk)->state, (state_value))
-  ^
-/home/tobias/MP/CS423/MP2/mp2.c:224:8: note: in expansion of macro ‘set_task_state’
-        set_task_state(&(curr_task->task),TASK_UNINTERRUPTIBLE);
-        ^
-include/linux/sched.h:294:20: error: request for member ‘state’ in something not a structure or union
-  smp_store_mb((tsk)->state, (state_value))
-                    ^
-./arch/x86/include/asm/cmpxchg.h:52:35: note: in definition of macro ‘__xchg_op’
-           : "+r" (__ret), "+m" (*(ptr)) \
-                                   ^
-./arch/x86/include/asm/barrier.h:38:45: note: in expansion of macro ‘xchg’
- #define smp_store_mb(var, value) do { (void)xchg(&var, value); } while (0)
-                                             ^
-include/linux/sched.h:294:2: note: in expansion of macro ‘smp_store_mb’
-  smp_store_mb((tsk)->state, (state_value))
-  ^
-/home/tobias/MP/CS423/MP2/mp2.c:224:8: note: in expansion of macro ‘set_task_state’
-        set_task_state(&(curr_task->task),TASK_UNINTERRUPTIBLE);
-        ^
-include/linux/sched.h:294:20: error: request for member ‘state’ in something not a structure or union
-  smp_store_mb((tsk)->state, (state_value))
-                    ^
-./arch/x86/include/asm/cmpxchg.h:57:35: note: in definition of macro ‘__xchg_op’
-           : "+r" (__ret), "+m" (*(ptr)) \
-                                   ^
-./arch/x86/include/asm/barrier.h:38:45: note: in expansion of macro ‘xchg’
- #define smp_store_mb(var, value) do { (void)xchg(&var, value); } while (0)
-                                             ^
-include/linux/sched.h:294:2: note: in expansion of macro ‘smp_store_mb’
-  smp_store_mb((tsk)->state, (state_value))
-  ^
-/home/tobias/MP/CS423/MP2/mp2.c:224:8: note: in expansion of macro ‘set_task_state’
-        set_task_state(&(curr_task->task),TASK_UNINTERRUPTIBLE);
-        ^
-include/linux/sched.h:294:20: error: request for member ‘state’ in something not a structure or union
-  smp_store_mb((tsk)->state, (state_value))
-                    ^
-./arch/x86/include/asm/cmpxchg.h:62:35: note: in definition of macro ‘__xchg_op’
-           : "+r" (__ret), "+m" (*(ptr)) \
-                                   ^
-./arch/x86/include/asm/barrier.h:38:45: note: in expansion of macro ‘xchg’
- #define smp_store_mb(var, value) do { (void)xchg(&var, value); } while (0)
-                                             ^
-include/linux/sched.h:294:2: note: in expansion of macro ‘smp_store_mb’
-  smp_store_mb((tsk)->state, (state_value))
-  ^
-/home/tobias/MP/CS423/MP2/mp2.c:224:8: note: in expansion of macro ‘set_task_state’
-        set_task_state(&(curr_task->task),TASK_UNINTERRUPTIBLE);
-        ^
-/home/tobias/MP/CS423/MP2/mp2.c: At top level:
-/home/tobias/MP/CS423/MP2/mp2.c:230:12: error: function declaration isn’t a prototype [-Werror=strict-prototypes]
- static int dispatch_function(){
-            ^
 /home/tobias/MP/CS423/MP2/mp2.c: In function ‘dispatch_function’:
-/home/tobias/MP/CS423/MP2/mp2.c:237:6: error: ‘kthread_should_stop’ undeclared (first use in this function)
-   if(kthread_should_stop) return 0;
-      ^
-/home/tobias/MP/CS423/MP2/mp2.c:239:3: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
+/home/tobias/MP/CS423/MP2/mp2.c:248:3: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
    struct mp2_task_struct* my_obj;
    ^
-/home/tobias/MP/CS423/MP2/mp2.c:240:3: error: ‘unsigne’ undeclared (first use in this function)
-   unsigne long least_period=INT_MAX;
-   ^
-/home/tobias/MP/CS423/MP2/mp2.c:240:11: error: expected ‘;’ before ‘long’
-   unsigne long least_period=INT_MAX;
-           ^
-/home/tobias/MP/CS423/MP2/mp2.c:245:8: error: ‘obj’ undeclared (first use in this function)
-     if(obj->task_state==READY){
-        ^
-/home/tobias/MP/CS423/MP2/mp2.c:19:16: error: expected ‘)’ before ‘;’ token
- #define READY 2;
-                ^
-/home/tobias/MP/CS423/MP2/mp2.c:245:25: note: in expansion of macro ‘READY’
-     if(obj->task_state==READY){
-                         ^
-/home/tobias/MP/CS423/MP2/mp2.c:246:33: error: ‘least_period’ undeclared (first use in this function)
-         if(obj->relative_period<least_period){
-                                 ^
-/home/tobias/MP/CS423/MP2/mp2.c:249:13: error: ‘next_task’ undeclared (first use in this function)
-             next_task=obj;     
-             ^
-/home/tobias/MP/CS423/MP2/mp2.c:257:5: error: unknown type name ‘sturct’
-     sturct sched_param sparam;
-     ^
-/home/tobias/MP/CS423/MP2/mp2.c:257:24: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘sparam’
-     sturct sched_param sparam;
-                        ^
-/home/tobias/MP/CS423/MP2/mp2.c:257:5: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
-     sturct sched_param sparam;
-     ^
-/home/tobias/MP/CS423/MP2/mp2.c:259:5: error: ‘sparam’ undeclared (first use in this function)
-     sparam.sched_priority=99;
-     ^
-/home/tobias/MP/CS423/MP2/mp2.c:262:5: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
+/home/tobias/MP/CS423/MP2/mp2.c:266:5: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
      struct sched_param sparam;
      ^
-/home/tobias/MP/CS423/MP2/mp2.c:264:24: error: ‘task’ undeclared (first use in this function)
-     sched_setscheduler(task,SCHED_NORMAL,&sparam);
-                        ^
+/home/tobias/MP/CS423/MP2/mp2.c:271:5: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
+     struct sched_param sparam2;
+     ^
 /home/tobias/MP/CS423/MP2/mp2.c: At top level:
-/home/tobias/MP/CS423/MP2/mp2.c:286:9: warning: initialization from incompatible pointer type [-Wincompatible-pointer-types]
+/home/tobias/MP/CS423/MP2/mp2.c:294:9: warning: initialization from incompatible pointer type [-Wincompatible-pointer-types]
   .write=mp2_write,
          ^
-/home/tobias/MP/CS423/MP2/mp2.c:286:9: note: (near initialization for ‘mp2_file.write’)
+/home/tobias/MP/CS423/MP2/mp2.c:294:9: note: (near initialization for ‘mp2_file.write’)
 /home/tobias/MP/CS423/MP2/mp2.c: In function ‘mp2_init’:
-/home/tobias/MP/CS423/MP2/mp2.c:297:4: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
+/home/tobias/MP/CS423/MP2/mp2.c:305:4: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
     int ret;
     ^
-/home/tobias/MP/CS423/MP2/mp2.c:303:45: error: ‘mp2_task_struct’ undeclared (first use in this function)
-    kcache=kmem_cache_create("kcache",sizeof(mp2_task_struct),0,SLAB_HWCACHE_ALIGN,NULL,NULL);
-                                             ^
-/home/tobias/MP/CS423/MP2/mp2.c:303:11: error: too many arguments to function ‘kmem_cache_create’
-    kcache=kmem_cache_create("kcache",sizeof(mp2_task_struct),0,SLAB_HWCACHE_ALIGN,NULL,NULL);
-           ^
-In file included from /home/tobias/MP/CS423/MP2/mp2.c:5:0:
-include/linux/slab.h:116:20: note: declared here
- struct kmem_cache *kmem_cache_create(const char *, size_t, size_t,
-                    ^
-/home/tobias/MP/CS423/MP2/mp2.c:305:15: error: implicit declaration of function ‘kthread_create’ [-Werror=implicit-function-declaration]
-    dispatcher=kthread_create(dispatch_function, NULL,"dispatcher function");
-               ^
-/home/tobias/MP/CS423/MP2/mp2.c:305:14: warning: assignment makes pointer from integer without a cast [-Wint-conversion]
-    dispatcher=kthread_create(dispatch_function, NULL,"dispatcher function");
-              ^
-/home/tobias/MP/CS423/MP2/mp2.c:297:8: warning: unused variable ‘ret’ [-Wunused-variable]
+In file included from /home/tobias/MP/CS423/MP2/mp2.c:17:0:
+/home/tobias/MP/CS423/MP2/mp2.c:313:30: warning: passing argument 1 of ‘kthread_create_on_node’ from incompatible pointer type [-Wincompatible-pointer-types]
+    dispatcher=kthread_create(&dispatch_function, NULL,"dispatcher function");
+                              ^
+include/linux/kthread.h:14:25: note: in definition of macro ‘kthread_create’
+  kthread_create_on_node(threadfn, data, NUMA_NO_NODE, namefmt, ##arg)
+                         ^
+include/linux/kthread.h:8:21: note: expected ‘int (*)(void *)’ but argument is of type ‘int (*)(void)’
+ struct task_struct *kthread_create_on_node(int (*threadfn)(void *data),
+                     ^
+/home/tobias/MP/CS423/MP2/mp2.c:305:8: warning: unused variable ‘ret’ [-Wunused-variable]
     int ret;
         ^
 /home/tobias/MP/CS423/MP2/mp2.c: In function ‘mp2_exit’:
-/home/tobias/MP/CS423/MP2/mp2.c:318:5: error: implicit declaration of function ‘kthread_stop’ [-Werror=implicit-function-declaration]
-     kthread_stop(dispatcher);
-     ^
-/home/tobias/MP/CS423/MP2/mp2.c:320:5: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
+/home/tobias/MP/CS423/MP2/mp2.c:328:5: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
      static struct list_head *pos,*q;
      ^
-/home/tobias/MP/CS423/MP2/mp2.c:336:16: error: implicit declaration of function ‘kmem_cache_destory’ [-Werror=implicit-function-declaration]
-     if(kcache) kmem_cache_destory(kcache);
-                ^
-cc1: some warnings being treated as errors
-scripts/Makefile.build:264: recipe for target '/home/tobias/MP/CS423/MP2/mp2.o' failed
-make[2]: *** [/home/tobias/MP/CS423/MP2/mp2.o] Error 1
-Makefile:1403: recipe for target '_module_/home/tobias/MP/CS423/MP2' failed
-make[1]: *** [_module_/home/tobias/MP/CS423/MP2] Error 2
+/home/tobias/MP/CS423/MP2/mp2.c: In function ‘my_timer_callback’:
+/home/tobias/MP/CS423/MP2/mp2.c:282:19: warning: ‘obj’ is used uninitialized in this function [-Wuninitialized]
+    obj->task_state=READY;
+                   ^
+  Building modules, stage 2.
+  MODPOST 1 modules
+  CC      /home/tobias/MP/CS423/MP2/mp2.mod.o
+  LD [M]  /home/tobias/MP/CS423/MP2/mp2.ko
 make[1]: Leaving directory '/usr/src/linux-headers-4.4.0-31-generic'
-Makefile:15: recipe for target 'modules' failed
-make: *** [modules] Error 2
+gcc -o userapp userapp.c
+userapp.c: In function ‘main’:
+userapp.c:42:21: warning: embedded ‘\0’ in format [-Wformat-contains-nul]
+        fprintf(file,"%d\0",pid);
+                     ^

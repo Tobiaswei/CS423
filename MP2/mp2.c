@@ -211,12 +211,12 @@ void yeild(unsigned int pid){
          }
         
       }
-      if(obj->next_period < jiffies) 
+      if(my_obj->next_period < jiffies) 
       {
-       obj->next_period=jiffies+msecs_to_jiffies(obj->relative_period);
-       mod_timer(&(runnning_task->task_timer),runnning_task->next_period);
-       obj->task_state=READY;
-       wake_up_process(obj->task);
+      my_obj->next_period=jiffies+msecs_to_jiffies(my_obj->relative_period);
+      mod_timer(&(runnning_task->task_timer),runnning_task->next_period);
+      my_obj->task_state=READY;
+       wake_up_process(my_obj->task);
       }
      else{
        if(runnning_task->pid!=pid)
@@ -307,8 +307,8 @@ int __init mp2_init(void)
    proc_dir=proc_mkdir(DIRECTORY,NULL);
    
    proc_entry=proc_create(FILENAME,0666,proc_dir,&mp2_file);  
-
-   kcache=kmem_cache_create("kcache",sizeof(mp2_task_struct),0,SLAB_HWCACHE_ALIGN,NULL);
+//   ssize_t size=sizeof(mp2_task_struct);
+   kcache=kmem_cache_create("kcache",sizeof(struct mp2_task_struct),0,SLAB_HWCACHE_ALIGN,NULL);
 
    dispatcher=kthread_create(&dispatch_function, NULL,"dispatcher function");
    

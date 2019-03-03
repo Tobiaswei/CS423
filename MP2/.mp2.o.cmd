@@ -790,6 +790,10 @@ deps_/home/tobias/MP/CS423/MP2/mp2.o := \
   include/uapi/linux/fcntl.h \
   arch/x86/include/uapi/asm/fcntl.h \
   include/uapi/asm-generic/fcntl.h \
+  include/linux/delay.h \
+  arch/x86/include/asm/delay.h \
+  include/asm-generic/delay.h \
+  include/linux/kthread.h \
 
 /home/tobias/MP/CS423/MP2/mp2.o: $(deps_/home/tobias/MP/CS423/MP2/mp2.o)
 
