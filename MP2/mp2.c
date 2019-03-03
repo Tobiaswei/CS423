@@ -8,15 +8,16 @@
 #include <linux/proc_fs.h> 
 #include <linux/time.h>
 #include<linux/string.h>
-#include <linux/workqueue.h>
+//#include <linux/workqueue.h>
 #include <linux/spinlock.h>
+#include <linux/delay.h>
 //#include <linux/vmalloc.h>
 #define FILENAME "status"
 #define DIRECTORY "mp2"
 
-#define SLEEP 0;
-#define RUN 1;
-#define READY 2;
+#define SLEEP 0
+#define RUN 1
+#define READY 2
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("yuguang2");
@@ -48,8 +49,9 @@ struct mp2_task_struct{
   unsigned long slice;  //effective computational time of each period 
 
 };
-struct mp2_task_struct * curr_task;// global variable for current running task!
+struct mp2_task_struct * current_task;// global variable for current running task!
 struct mp2_task_struct * old_task;// gloabal variable for last running task!
+struct mp2_task_struct * next_task;
 //static struct workqueue_struct *my_wq;
 struct task_struct * dispatcher;
 struct kmem_cache * kcache;
@@ -65,7 +67,7 @@ void registration(unsigned int pid, unsigned long period,unsigned slice){
 
         obj->task=find_task_by_pid(pid);
 
-        set_task_state(&obj->task, TASK_INTERRUPTIBLE);
+        set_task_state(obj->task, TASK_INTERRUPTIBLE);
 
         obj->task_state=SLEEP;
                //timer initalization 
@@ -205,23 +207,23 @@ void yeild(unsigned int pid){
       }
       if(obj->next_period < jiffies) 
       {
-       obj->next_period=jiffies+mesecs_to_jiffies(obj->relative_period);
-       mod_timer(&(curr_task->task_timer),curr_task->next_period);
+       obj->next_period=jiffies+msecs_to_jiffies(obj->relative_period);
+       mod_timer(&(current_task->task_timer),current_task->next_period);
        obj->task_state=READY;
        wake_up_process(obj->task);
       }
      else{
-       if(curr_task->pid!=pid)
+       if(current_task->pid!=pid)
          {    printk("error!");
               return;
          }      
-       mod_timer(&(curr_task->task_timer),curr_task->next_period);
+       mod_timer(&(current_task->task_timer),current_task->next_period);
 
-       curr_task->next_period=curr->next_period+msecs_to_jiffies(relative_period);
+       current_task->next_period=curr->next_period+msecs_to_jiffies(current_task->relative_period);
 
-       curr_task->task_state=SLEEP;
+       current_task->task_state=SLEEP;
       
-       set_task_state(&(curr_task->task),TASK_UNINTERRUPTIBLE);
+       set_task_state(current_task->task,TASK_UNINTERRUPTIBLE);
       }
        wake_up_process(dispatcher);
        schedule();
@@ -234,10 +236,11 @@ while (1){
   set_current_state(TASK_INTERRUPTIBLE);
   schedule();
   
-  if(kthread_should_stop) return 0;
+  if(kthread_should_stop()) return 0;
   
+  old_task=current_task;
   struct mp2_task_struct* my_obj;
-  unsigne long least_period=INT_MAX;
+  unsigned long least_period=INT_MAX;
 
   spin_lock(&my_lock);
   list_for_each_entry(my_obj,&new_list,my_list){
@@ -252,16 +255,16 @@ while (1){
     }
     spin_unlock(&my_lock);
     
-    curr_task=next_task;
-
-    sturct sched_param sparam;
-    wake_up_process(curr_task->task);
-    sparam.sched_priority=99;
-    sched_setscheduler(curr_task->task, SCHED_FIFO, &sparam);
+    current_task=next_task;
 
     struct sched_param sparam;
-    sparam.sched_priority=0;
-    sched_setscheduler(task,SCHED_NORMAL,&sparam);
+    wake_up_process(current_task->task);
+    sparam.sched_priority=99;
+    sched_setscheduler(current_task->task, SCHED_FIFO, &sparam);
+
+    struct sched_param sparam2;
+    sparam2.sched_priority=0;
+    sched_setscheduler(old_task->task,SCHED_NORMAL,&sparam2);
 }
    return 0;
 }
@@ -300,9 +303,9 @@ int __init mp2_init(void)
    
    proc_entry=proc_create(FILENAME,0666,proc_dir,&mp2_file);  
 
-   kcache=kmem_cache_create("kcache",sizeof(mp2_task_struct),0,SLAB_HWCACHE_ALIGN,NULL,NULL);
+   kcache=kmem_cache_create("kcache",sizeof(mp2_task_struct),0,SLAB_HWCACHE_ALIGN,NULL);
 
-   dispatcher=kthread_create(dispatch_function, NULL,"dispatcher function");
+   dispatcher=kthread_create(&dispatch_function, NULL,"dispatcher function");
    
    printk(KERN_ALERT "MP2 MODULE LOADED\n");
    return 0;   
@@ -315,7 +318,7 @@ void __exit mp2_exit(void)
    printk(KERN_ALERT "MP2 MODULE UNLOADING\n");
    #endif  
   // Insert your code here ...
-    kthread_stop(dispatcher);
+    //kthread_stop(dispatcher);
  
     static struct list_head *pos,*q;
 
@@ -333,7 +336,7 @@ void __exit mp2_exit(void)
     
       kmem_cache_free(kcache,tmp);
     }
-    if(kcache) kmem_cache_destory(kcache);
+    if(kcache) kmem_cache_destroy(kcache);
    printk(KERN_ALERT "MP2 MODULE UNLOADED\n");
 }// Register init and exit funtions
 module_init(mp2_init);
