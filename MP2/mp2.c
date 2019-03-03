@@ -12,6 +12,10 @@
 #include <linux/spinlock.h>
 #include <linux/delay.h>
 //#include <linux/vmalloc.h>
+//kthread lib
+#include <linux/sched.h>
+#include <linux/kthread.h>
+
 #define FILENAME "status"
 #define DIRECTORY "mp2"
 
@@ -49,12 +53,14 @@ struct mp2_task_struct{
   unsigned long slice;  //effective computational time of each period 
 
 };
-struct mp2_task_struct * current_task;// global variable for current running task!
+struct mp2_task_struct * runnning_task;// global variable for current running task!
 struct mp2_task_struct * old_task;// gloabal variable for last running task!
 struct mp2_task_struct * next_task;
 //static struct workqueue_struct *my_wq;
 struct task_struct * dispatcher;
 struct kmem_cache * kcache;
+
+void my_timer_callback(unsigned long data);
 
 void registration(unsigned int pid, unsigned long period,unsigned slice){
 
@@ -208,28 +214,28 @@ void yeild(unsigned int pid){
       if(obj->next_period < jiffies) 
       {
        obj->next_period=jiffies+msecs_to_jiffies(obj->relative_period);
-       mod_timer(&(current_task->task_timer),current_task->next_period);
+       mod_timer(&(runnning_task->task_timer),runnning_task->next_period);
        obj->task_state=READY;
        wake_up_process(obj->task);
       }
      else{
-       if(current_task->pid!=pid)
+       if(runnning_task->pid!=pid)
          {    printk("error!");
               return;
          }      
-       mod_timer(&(current_task->task_timer),current_task->next_period);
+       mod_timer(&(runnning_task->task_timer),runnning_task->next_period);
 
-       current_task->next_period=curr->next_period+msecs_to_jiffies(current_task->relative_period);
+       runnning_task->next_period=runnning_task->next_period+msecs_to_jiffies(runnning_task->relative_period);
 
-       current_task->task_state=SLEEP;
+       runnning_task->task_state=SLEEP;
       
-       set_task_state(current_task->task,TASK_UNINTERRUPTIBLE);
+       set_task_state(runnning_task->task,TASK_UNINTERRUPTIBLE);
       }
        wake_up_process(dispatcher);
        schedule();
 
 }
-static int dispatch_function(){
+static int dispatch_function(void){
 
 while (1){
 
@@ -238,29 +244,29 @@ while (1){
   
   if(kthread_should_stop()) return 0;
   
-  old_task=current_task;
+  old_task=runnning_task;
   struct mp2_task_struct* my_obj;
   unsigned long least_period=INT_MAX;
 
   spin_lock(&my_lock);
   list_for_each_entry(my_obj,&new_list,my_list){
 
-    if(obj->task_state==READY){
-        if(obj->relative_period<least_period){
+    if(my_obj->task_state==READY){
+        if(my_obj->relative_period<least_period){
 
-            least_period=obj->relative_period;
-            next_task=obj;     
+            least_period=my_obj->relative_period;
+            next_task=my_obj;     
          }
       }
     }
     spin_unlock(&my_lock);
     
-    current_task=next_task;
+    runnning_task=next_task;
 
     struct sched_param sparam;
-    wake_up_process(current_task->task);
+    wake_up_process(runnning_task->task);
     sparam.sched_priority=99;
-    sched_setscheduler(current_task->task, SCHED_FIFO, &sparam);
+    sched_setscheduler(runnning_task->task, SCHED_FIFO, &sparam);
 
     struct sched_param sparam2;
     sparam2.sched_priority=0;
@@ -279,7 +285,6 @@ void my_timer_callback(unsigned long data)
    wake_up_process(dispatcher);
    schedule();   
    
-
 }
 
 static const struct file_operations mp2_file={
