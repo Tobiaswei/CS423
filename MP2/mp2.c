@@ -43,28 +43,35 @@ struct mp2_task_struct{
    
   unsigned int  pid;
 
-  unsigned long relative_period;
+  unsigned long relative_period; //period
 
-  unsigned long slice;
+  unsigned long slice;  //effective computational time of each period 
 
 };
-
-static struct workqueue_struct *my_wq;
+struct mp2_task_struct * curr_task;// global variable for current running task!
+struct mp2_task_struct * old_task;// gloabal variable for last running task!
+//static struct workqueue_struct *my_wq;
+struct task_struct * dispatcher;
+struct kmem_cache * kcache;
 
 void registration(unsigned int pid, unsigned long period,unsigned slice){
 
         struct mp2_task_struct *obj;
-        obj= (struct mp2_task_struct *) kmalloc(sizeof(struct mp2_task_struct),GFP_KERNEL);
-
+       // obj= (struct mp2_task_struct *) kmalloc(sizeof(struct mp2_task_struct),GFP_KERNEL);
+        obj=(struct mp2_task_struct *)kmem_cache_alloc(kcache,GFP_KERNEL);
         obj->pid=pid;
         obj->relative_period=period;
-        obj->slice=slice
+        obj->slice=slice;
 
         obj->task=find_task_by_pid(pid);
 
-        set_task_state(obj->task, TASK_INTERRUPTIBLE);
+        set_task_state(&obj->task, TASK_INTERRUPTIBLE);
 
         obj->task_state=SLEEP;
+               //timer initalization 
+        setup_timer(&obj->task_timer,my_timer_callback,obj);
+
+        obj->next_period=jiffies;//msecs_to_jiffies(obj->relative_period);
 
         spin_lock(&my_lock);
 
@@ -73,8 +80,7 @@ void registration(unsigned int pid, unsigned long period,unsigned slice){
         spin_unlock(&my_lock);
 
 }
-
-void deregistrarion(){
+void deregistrarion(void){
 
      static struct list_head *pos,*q;
      //static struct mp2_task_struct head;
@@ -82,8 +88,9 @@ void deregistrarion(){
     list_for_each_safe(pos,q,&new_list){
         static struct mp2_task_struct *tmp;  
         tmp=list_entry(pos,struct mp2_task_struct,my_list);
+        del_timer(&(tmp->task_timer));
         list_del(pos);
-        kfree(tmp);
+        kmem_cache_free(kcache,tmp);
     }
 
 
@@ -93,10 +100,11 @@ ssize_t mp2_write(struct file* flip, const char __user *buff,
 
                        unsigned long len,void *data)
 {
- 
-   char * command;
+  printk("get into write!");  
+  
+  char * command;
 
-   command= (char *) kmalloc(len+1,GFP_KERNEL);
+  command= (char *) kmalloc(len+1,GFP_KERNEL);
 
   unsigned int pid;
     
@@ -104,20 +112,25 @@ ssize_t mp2_write(struct file* flip, const char __user *buff,
 
   unsigned long slice;
 
-   char *token[10];
+  char *token[10];
 
-   int i=0;
+  int i=0;
 
-   if(copy_from_user(command,buff,len)){
+  if(copy_from_user(command,buff,len)){
      
            return -ENOSPC;
     }
 
-    char * delim=","; //split by ','
+  char * delim=","; //split by ','
 
-    while(token[i++]=strsep(&command,delim)){}
+    
+  while(token[i++]=strsep(&command,delim)){
+  
+    if(DEBUG) printk("token %d : %s\n",i-1,token[i-1]);
 
-   if(token[0]=="R"){
+   }
+
+   if(strcmp(token[0],"R")==0){
            
         sscanf(token[1],"%lu",&pid);
 
@@ -125,26 +138,29 @@ ssize_t mp2_write(struct file* flip, const char __user *buff,
 
         sscanf(token[3],"%lu",&slice);
 
-        if(DEBUG) printk("Registration:the value of pid is %lu period is %lu computation time is %lu",pid,
-            period,slice);
+        if(DEBUG) printk("Registration:the value of pid is %lu period is %lu computation time is %lu\n",pid, period,slice);
 
-          registration(pid,period,slice);// registration
+         registration(pid,period,slice);// registration
 
    }
 
-   if(token[0]=="Y"){
+  else if(strcmp(token[0],"Y")==0){
 
          sscanf(token[1],"%lu",&pid);
 
-         if(DEBUG) printk("YIELD: the value of pid is %lu",pid);
+         if(DEBUG) printk("YIELD: the value of pid is %lu\n",pid);
 
    }
-   if(token[0]=="D"){
+  else if(strcmp(token[0],"D")==0){
            
          sscanf(token[1],"%lu",&pid);
 
-         if(DEBUG) printk("Deregistrarion: the value of pid is %lu",pid);
+         if(DEBUG) printk("Deregistrarion: the value of pid is %lu\n",pid);
 
+   }else{
+          
+          printk("No related option");
+       
    }
    
     //kstrtoint(pid_,10,&_pid);
@@ -175,47 +191,94 @@ static ssize_t mp2_read(struct file *file ,char __user *buffer, size_t count,lof
       
    return  *pos;
 }
-/*
-static void my_wq_function(struct work_struct *work){
+void yeild(unsigned int pid){
+       
+       struct mp2_task_struct* my_obj;
+
+       list_for_each_entry(my_obj,&new_list,my_list){
+      
+         if(my_obj->pid==pid){
+                
+               break;
+         }
+        
+      }
+      if(obj->next_period < jiffies) 
+      {
+       obj->next_period=jiffies+mesecs_to_jiffies(obj->relative_period);
+       mod_timer(&(curr_task->task_timer),curr_task->next_period);
+       obj->task_state=READY;
+       wake_up_process(obj->task);
+      }
+     else{
+       if(curr_task->pid!=pid)
+         {    printk("error!");
+              return;
+         }      
+       mod_timer(&(curr_task->task_timer),curr_task->next_period);
+
+       curr_task->next_period=curr->next_period+msecs_to_jiffies(relative_period);
+
+       curr_task->task_state=SLEEP;
+      
+       set_task_state(&(curr_task->task),TASK_UNINTERRUPTIBLE);
+      }
+       wake_up_process(dispatcher);
+       schedule();
+
+}
+static int dispatch_function(){
+
+while (1){
+
+  set_current_state(TASK_INTERRUPTIBLE);
+  schedule();
+  
+  if(kthread_should_stop) return 0;
   
   struct mp2_task_struct* my_obj;
-//  spin_lock(&my_lock); 
- 
-   static struct list_head *pos,*q;
-  list_for_each_safe(pos,q,&new_list){
+  unsigne long least_period=INT_MAX;
 
-   unsigned long _cpu_time=0;
- 
-   my_obj=list_entry(pos,struct mp2_task_struct,my_list);
-   if(get_cpu_use(my_obj->pid,&_cpu_time)==-1){
-   if(DEBUG) printk("pid is invalid\n");
-   list_del(&(my_obj->my_list));
-   kfree(my_obj);    
-   
-     }
- else{
-    spin_lock(&my_lock);
-    my_obj->cpu_time=_cpu_time;
-     spin_unlock(&my_lock);
-    if(DEBUG) printk("pid is %d cpu-time is %lu\n",my_obj->pid,my_obj->cpu_time);
-      } 
+  spin_lock(&my_lock);
+  list_for_each_entry(my_obj,&new_list,my_list){
 
+    if(obj->task_state==READY){
+        if(obj->relative_period<least_period){
+
+            least_period=obj->relative_period;
+            next_task=obj;     
+         }
+      }
     }
- // spin_unlock(&my_lock);      
+    spin_unlock(&my_lock);
+    
+    curr_task=next_task;
+
+    sturct sched_param sparam;
+    wake_up_process(curr_task->task);
+    sparam.sched_priority=99;
+    sched_setscheduler(curr_task->task, SCHED_FIFO, &sparam);
+
+    struct sched_param sparam;
+    sparam.sched_priority=0;
+    sched_setscheduler(task,SCHED_NORMAL,&sparam);
+}
+   return 0;
 }
 
 void my_timer_callback(unsigned long data)
 {
-//   int ret;
-    
-   struct work_struct *work=(struct work_struct *)kmalloc(sizeof(struct work_struct),GFP_KERNEL);
-   INIT_WORK((struct work_struct*)work,my_wq_function);
-   queue_work(my_wq,(struct work_struct*)work);
+   struct mp2_task_struct *obj;
 
-   setup_timer(&my_timer,my_timer_callback,0);
-   mod_timer(&my_timer,jiffies+msecs_to_jiffies(5000));
+   obj->task_state=READY;
+   wake_up_process(obj->task);
+
+   wake_up_process(dispatcher);
+   schedule();   
+   
+
 }
-*/
+
 static const struct file_operations mp2_file={
 
  .owner=THIS_MODULE,
@@ -235,13 +298,12 @@ int __init mp2_init(void)
    // Insert your code here ...
    proc_dir=proc_mkdir(DIRECTORY,NULL);
    
-   proc_entry=proc_create(FILENAME,0666,proc_dir,&mp2_file);
-   
-   //my_wq=create_workqueue("my_queue");
+   proc_entry=proc_create(FILENAME,0666,proc_dir,&mp2_file);  
 
-  // setup_timer(&my_timer,my_timer_callback,0);
-   //ret=mod_timer(&my_timer,jiffies+msecs_to_jiffies(5000));
-   //if(ret) printk("Error in mod_timer\n");
+   kcache=kmem_cache_create("kcache",sizeof(mp2_task_struct),0,SLAB_HWCACHE_ALIGN,NULL,NULL);
+
+   dispatcher=kthread_create(dispatch_function, NULL,"dispatcher function");
+   
    printk(KERN_ALERT "MP2 MODULE LOADED\n");
    return 0;   
 }
@@ -253,19 +315,25 @@ void __exit mp2_exit(void)
    printk(KERN_ALERT "MP2 MODULE UNLOADING\n");
    #endif  
   // Insert your code here ...
-   static struct list_head *pos,*q;
+    kthread_stop(dispatcher);
+ 
+    static struct list_head *pos,*q;
 
-   //del_timer(&my_timer);
-   //flush_workqueue(my_wq);
-   //destroy_workqueue(my_wq);
    proc_remove(proc_entry);
    proc_remove(proc_dir);
    list_for_each_safe(pos,q,&new_list){
-   static struct mp2_task_struct *tmp;  
-    tmp=list_entry(pos,struct mp2_task_struct,my_list);
-    list_del(pos);
-    kfree(tmp);
+  
+      static struct mp2_task_struct *tmp; 
+  
+      tmp=list_entry(pos,struct mp2_task_struct,my_list);
+     
+      del_timer(&(tmp->task_timer));
+
+      list_del(pos);
+    
+      kmem_cache_free(kcache,tmp);
     }
+    if(kcache) kmem_cache_destory(kcache);
    printk(KERN_ALERT "MP2 MODULE UNLOADED\n");
 }// Register init and exit funtions
 module_init(mp2_init);

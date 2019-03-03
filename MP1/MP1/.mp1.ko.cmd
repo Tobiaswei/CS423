@@ -1,1 +1,1 @@
-cmd_/home/tobias/MP/CS423/MP1/mp1.ko := ld -r -m elf_x86_64 -T ./scripts/module-common.lds --build-id  -o /home/tobias/MP/CS423/MP1/mp1.ko /home/tobias/MP/CS423/MP1/mp1.o /home/tobias/MP/CS423/MP1/mp1.mod.o
+cmd_/home/tobias/MP/CS423/MP1/MP1/mp1.ko := ld -r -m elf_x86_64 -T ./scripts/module-common.lds --build-id  -o /home/tobias/MP/CS423/MP1/MP1/mp1.ko /home/tobias/MP/CS423/MP1/MP1/mp1.o /home/tobias/MP/CS423/MP1/MP1/mp1.mod.o
