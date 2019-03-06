@@ -204,7 +204,7 @@ static ssize_t mp2_read(struct file *file ,char __user *buffer, size_t count,lof
         if(DEBUG) printk("pid is %lu period is %lu computation time %lu\n",my_obj->pid,my_obj->relative_period,my_obj->slice);
         if(DEBUG) printk("my_buff is %s\n",my_buff);
 
-       if(copy_to_user(buffer + *pos ,my_buff,strlen(my_buff)+1)){
+        if(copy_to_user(buffer + *pos ,my_buff,strlen(my_buff)+1)){
         return -EFAULT;      
         }
 
