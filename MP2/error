@@ -22,67 +22,77 @@ include/linux/timer.h:147:2: note: in expansion of macro ‘__setup_timer’
          setup_timer(&obj->task_timer,my_timer_callback,obj);
          ^
 /home/tobias/MP/CS423/MP2/mp2.c: In function ‘mp2_write’:
-/home/tobias/MP/CS423/MP2/mp2.c:113:3: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
+/home/tobias/MP/CS423/MP2/mp2.c:116:3: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
    char * command;
    ^
-/home/tobias/MP/CS423/MP2/mp2.c:117:3: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
+/home/tobias/MP/CS423/MP2/mp2.c:120:3: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
    unsigned int pid;
    ^
-/home/tobias/MP/CS423/MP2/mp2.c:132:3: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
+/home/tobias/MP/CS423/MP2/mp2.c:135:3: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
    char * delim=","; //split by ','
    ^
-/home/tobias/MP/CS423/MP2/mp2.c:135:3: warning: suggest parentheses around assignment used as truth value [-Wparentheses]
+/home/tobias/MP/CS423/MP2/mp2.c:138:3: warning: suggest parentheses around assignment used as truth value [-Wparentheses]
    while(token[i++]=strsep(&command,delim)){
    ^
-/home/tobias/MP/CS423/MP2/mp2.c:143:25: warning: format ‘%lu’ expects argument of type ‘long unsigned int *’, but argument 3 has type ‘unsigned int *’ [-Wformat=]
+/home/tobias/MP/CS423/MP2/mp2.c:146:25: warning: format ‘%lu’ expects argument of type ‘long unsigned int *’, but argument 3 has type ‘unsigned int *’ [-Wformat=]
          sscanf(token[1],"%lu",&pid);
                          ^
-/home/tobias/MP/CS423/MP2/mp2.c:149:26: warning: format ‘%lu’ expects argument of type ‘long unsigned int’, but argument 2 has type ‘unsigned int’ [-Wformat=]
+/home/tobias/MP/CS423/MP2/mp2.c:152:26: warning: format ‘%lu’ expects argument of type ‘long unsigned int’, but argument 2 has type ‘unsigned int’ [-Wformat=]
          if(DEBUG) printk("Registration:the value of pid is %lu period is %lu computation time is %lu\n",pid, period,slice);
                           ^
-/home/tobias/MP/CS423/MP2/mp2.c:157:26: warning: format ‘%lu’ expects argument of type ‘long unsigned int *’, but argument 3 has type ‘unsigned int *’ [-Wformat=]
+/home/tobias/MP/CS423/MP2/mp2.c:160:26: warning: format ‘%lu’ expects argument of type ‘long unsigned int *’, but argument 3 has type ‘unsigned int *’ [-Wformat=]
           sscanf(token[1],"%lu",&pid);
                           ^
-/home/tobias/MP/CS423/MP2/mp2.c:159:27: warning: format ‘%lu’ expects argument of type ‘long unsigned int’, but argument 2 has type ‘unsigned int’ [-Wformat=]
+/home/tobias/MP/CS423/MP2/mp2.c:162:10: error: implicit declaration of function ‘YIELD’ [-Werror=implicit-function-declaration]
+          YIELD(pid);
+          ^
+/home/tobias/MP/CS423/MP2/mp2.c:164:27: warning: format ‘%lu’ expects argument of type ‘long unsigned int’, but argument 2 has type ‘unsigned int’ [-Wformat=]
           if(DEBUG) printk("YIELD: the value of pid is %lu\n",pid);
                            ^
-/home/tobias/MP/CS423/MP2/mp2.c:164:26: warning: format ‘%lu’ expects argument of type ‘long unsigned int *’, but argument 3 has type ‘unsigned int *’ [-Wformat=]
+/home/tobias/MP/CS423/MP2/mp2.c:169:26: warning: format ‘%lu’ expects argument of type ‘long unsigned int *’, but argument 3 has type ‘unsigned int *’ [-Wformat=]
           sscanf(token[1],"%lu",&pid);
                           ^
-/home/tobias/MP/CS423/MP2/mp2.c:166:27: warning: format ‘%lu’ expects argument of type ‘long unsigned int’, but argument 2 has type ‘unsigned int’ [-Wformat=]
+/home/tobias/MP/CS423/MP2/mp2.c:173:27: warning: format ‘%lu’ expects argument of type ‘long unsigned int’, but argument 2 has type ‘unsigned int’ [-Wformat=]
           if(DEBUG) printk("Deregistrarion: the value of pid is %lu\n",pid);
                            ^
 /home/tobias/MP/CS423/MP2/mp2.c: In function ‘mp2_read’:
-/home/tobias/MP/CS423/MP2/mp2.c:183:3: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
+/home/tobias/MP/CS423/MP2/mp2.c:190:3: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
    struct mp2_task_struct* my_obj;
    ^
-/home/tobias/MP/CS423/MP2/mp2.c:187:25: warning: format ‘%lu’ expects argument of type ‘long unsigned int’, but argument 3 has type ‘unsigned int’ [-Wformat=]
+/home/tobias/MP/CS423/MP2/mp2.c:194:25: warning: format ‘%lu’ expects argument of type ‘long unsigned int’, but argument 3 has type ‘unsigned int’ [-Wformat=]
          sprintf(my_buff,"%lu : %lu  :%lu\n",my_obj->pid,my_obj->relative_period,my_obj->slice);
                          ^
-/home/tobias/MP/CS423/MP2/mp2.c:188:26: warning: format ‘%lu’ expects argument of type ‘long unsigned int’, but argument 2 has type ‘unsigned int’ [-Wformat=]
+/home/tobias/MP/CS423/MP2/mp2.c:195:26: warning: format ‘%lu’ expects argument of type ‘long unsigned int’, but argument 2 has type ‘unsigned int’ [-Wformat=]
          if(DEBUG) printk("pid is %lu period is %lu computation time %lu\n",my_obj->pid,my_obj->relative_period,my_obj->slice);
                           ^
+/home/tobias/MP/CS423/MP2/mp2.c: At top level:
+/home/tobias/MP/CS423/MP2/mp2.c:209:6: warning: conflicting types for ‘YIELD’
+ void YIELD (unsigned int pid){
+      ^
+/home/tobias/MP/CS423/MP2/mp2.c:162:10: note: previous implicit declaration of ‘YIELD’ was here
+          YIELD(pid);
+          ^
 /home/tobias/MP/CS423/MP2/mp2.c: In function ‘dispatch_function’:
-/home/tobias/MP/CS423/MP2/mp2.c:248:3: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
+/home/tobias/MP/CS423/MP2/mp2.c:255:3: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
    struct mp2_task_struct* my_obj;
    ^
-/home/tobias/MP/CS423/MP2/mp2.c:266:5: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
+/home/tobias/MP/CS423/MP2/mp2.c:273:5: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
      struct sched_param sparam;
      ^
-/home/tobias/MP/CS423/MP2/mp2.c:271:5: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
+/home/tobias/MP/CS423/MP2/mp2.c:278:5: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
      struct sched_param sparam2;
      ^
 /home/tobias/MP/CS423/MP2/mp2.c: At top level:
-/home/tobias/MP/CS423/MP2/mp2.c:294:9: warning: initialization from incompatible pointer type [-Wincompatible-pointer-types]
+/home/tobias/MP/CS423/MP2/mp2.c:301:9: warning: initialization from incompatible pointer type [-Wincompatible-pointer-types]
   .write=mp2_write,
          ^
-/home/tobias/MP/CS423/MP2/mp2.c:294:9: note: (near initialization for ‘mp2_file.write’)
+/home/tobias/MP/CS423/MP2/mp2.c:301:9: note: (near initialization for ‘mp2_file.write’)
 /home/tobias/MP/CS423/MP2/mp2.c: In function ‘mp2_init’:
-/home/tobias/MP/CS423/MP2/mp2.c:305:4: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
+/home/tobias/MP/CS423/MP2/mp2.c:312:4: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
     int ret;
     ^
 In file included from /home/tobias/MP/CS423/MP2/mp2.c:17:0:
-/home/tobias/MP/CS423/MP2/mp2.c:313:30: warning: passing argument 1 of ‘kthread_create_on_node’ from incompatible pointer type [-Wincompatible-pointer-types]
+/home/tobias/MP/CS423/MP2/mp2.c:320:30: warning: passing argument 1 of ‘kthread_create_on_node’ from incompatible pointer type [-Wincompatible-pointer-types]
     dispatcher=kthread_create(&dispatch_function, NULL,"dispatcher function");
                               ^
 include/linux/kthread.h:14:25: note: in definition of macro ‘kthread_create’
@@ -91,24 +101,22 @@ include/linux/kthread.h:14:25: note: in definition of macro ‘kthread_create’
 include/linux/kthread.h:8:21: note: expected ‘int (*)(void *)’ but argument is of type ‘int (*)(void)’
  struct task_struct *kthread_create_on_node(int (*threadfn)(void *data),
                      ^
-/home/tobias/MP/CS423/MP2/mp2.c:305:8: warning: unused variable ‘ret’ [-Wunused-variable]
+/home/tobias/MP/CS423/MP2/mp2.c:312:8: warning: unused variable ‘ret’ [-Wunused-variable]
     int ret;
         ^
 /home/tobias/MP/CS423/MP2/mp2.c: In function ‘mp2_exit’:
-/home/tobias/MP/CS423/MP2/mp2.c:328:5: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
+/home/tobias/MP/CS423/MP2/mp2.c:335:5: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
      static struct list_head *pos,*q;
      ^
 /home/tobias/MP/CS423/MP2/mp2.c: In function ‘my_timer_callback’:
-/home/tobias/MP/CS423/MP2/mp2.c:282:19: warning: ‘obj’ is used uninitialized in this function [-Wuninitialized]
+/home/tobias/MP/CS423/MP2/mp2.c:289:19: warning: ‘obj’ is used uninitialized in this function [-Wuninitialized]
     obj->task_state=READY;
                    ^
-  Building modules, stage 2.
-  MODPOST 1 modules
-  CC      /home/tobias/MP/CS423/MP2/mp2.mod.o
-  LD [M]  /home/tobias/MP/CS423/MP2/mp2.ko
+cc1: some warnings being treated as errors
+scripts/Makefile.build:264: recipe for target '/home/tobias/MP/CS423/MP2/mp2.o' failed
+make[2]: *** [/home/tobias/MP/CS423/MP2/mp2.o] Error 1
+Makefile:1403: recipe for target '_module_/home/tobias/MP/CS423/MP2' failed
+make[1]: *** [_module_/home/tobias/MP/CS423/MP2] Error 2
 make[1]: Leaving directory '/usr/src/linux-headers-4.4.0-31-generic'
-gcc -o userapp userapp.c
-userapp.c: In function ‘main’:
-userapp.c:42:21: warning: embedded ‘\0’ in format [-Wformat-contains-nul]
-        fprintf(file,"%d\0",pid);
-                     ^
+Makefile:15: recipe for target 'modules' failed
+make: *** [modules] Error 2

@@ -24,14 +24,14 @@ __attribute__((section("__versions"))) = {
 	{ 0xc980bc77, __VMLINUX_SYMBOL_STR(kmem_cache_create) },
 	{ 0xa13aece1, __VMLINUX_SYMBOL_STR(proc_create_data) },
 	{ 0xfd036dc2, __VMLINUX_SYMBOL_STR(proc_mkdir) },
-	{ 0x7f02188f, __VMLINUX_SYMBOL_STR(__msecs_to_jiffies) },
-	{ 0x16e5c2a, __VMLINUX_SYMBOL_STR(mod_timer) },
-	{ 0xc9993dd0, __VMLINUX_SYMBOL_STR(kmem_cache_free) },
-	{ 0x6c09c2a4, __VMLINUX_SYMBOL_STR(del_timer) },
 	{ 0x20c55ae0, __VMLINUX_SYMBOL_STR(sscanf) },
 	{ 0x85df9b6c, __VMLINUX_SYMBOL_STR(strsep) },
 	{ 0x4f6b400b, __VMLINUX_SYMBOL_STR(_copy_from_user) },
 	{ 0xd2b09ce5, __VMLINUX_SYMBOL_STR(__kmalloc) },
+	{ 0x7f02188f, __VMLINUX_SYMBOL_STR(__msecs_to_jiffies) },
+	{ 0x16e5c2a, __VMLINUX_SYMBOL_STR(mod_timer) },
+	{ 0xc9993dd0, __VMLINUX_SYMBOL_STR(kmem_cache_free) },
+	{ 0x6c09c2a4, __VMLINUX_SYMBOL_STR(del_timer) },
 	{ 0x7d11c268, __VMLINUX_SYMBOL_STR(jiffies) },
 	{ 0x9580deb, __VMLINUX_SYMBOL_STR(init_timer_key) },
 	{ 0xa304baeb, __VMLINUX_SYMBOL_STR(kmem_cache_alloc) },
@@ -57,4 +57,4 @@ __attribute__((section(".modinfo"))) =
 "depends=";
 
 
-MODULE_INFO(srcversion, "F01C9C798CCE76F9A35FA25");
+MODULE_INFO(srcversion, "072DED2CC29CD1B2E458473");

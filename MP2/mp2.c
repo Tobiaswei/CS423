@@ -56,16 +56,25 @@ struct mp2_task_struct{
 struct mp2_task_struct * runnning_task;// global variable for current running task!
 struct mp2_task_struct * old_task;// gloabal variable for last running task!
 struct mp2_task_struct * next_task;
-//static struct workqueue_struct *my_wq;
+//declare of admission control variable
+unsigned long utilization;
+ 
 struct task_struct * dispatcher;
 struct kmem_cache * kcache;
-
+//declrations of functions 
 void my_timer_callback(unsigned long data);
+void YIELD(unsigned int pid);
 
 void registration(unsigned int pid, unsigned long period,unsigned slice){
 
         struct mp2_task_struct *obj;
        // obj= (struct mp2_task_struct *) kmalloc(sizeof(struct mp2_task_struct),GFP_KERNEL);
+      utilization+= slice*1000000/period;
+      if(utilization >=693000)
+      {
+           printk("The cpu has been fully utilization cannot be regiseter anymore");
+           return; 
+       }
         obj=(struct mp2_task_struct *)kmem_cache_alloc(kcache,GFP_KERNEL);
         obj->pid=pid;
         obj->relative_period=period;
@@ -88,7 +97,7 @@ void registration(unsigned int pid, unsigned long period,unsigned slice){
         spin_unlock(&my_lock);
 
 }
-void deregistrarion(void){
+void deregistration(unsigned int pid){
 
      static struct list_head *pos,*q;
      //static struct mp2_task_struct head;
@@ -96,9 +105,12 @@ void deregistrarion(void){
     list_for_each_safe(pos,q,&new_list){
         static struct mp2_task_struct *tmp;  
         tmp=list_entry(pos,struct mp2_task_struct,my_list);
+        if(tmp->pid==pid)
+       {
         del_timer(&(tmp->task_timer));
         list_del(pos);
         kmem_cache_free(kcache,tmp);
+       }  
     }
 
 
@@ -156,12 +168,16 @@ ssize_t mp2_write(struct file* flip, const char __user *buff,
 
          sscanf(token[1],"%lu",&pid);
 
+         YIELD(pid);
+
          if(DEBUG) printk("YIELD: the value of pid is %lu\n",pid);
 
    }
   else if(strcmp(token[0],"D")==0){
            
          sscanf(token[1],"%lu",&pid);
+         
+         deregistration(pid);
 
          if(DEBUG) printk("Deregistrarion: the value of pid is %lu\n",pid);
 
@@ -199,7 +215,7 @@ static ssize_t mp2_read(struct file *file ,char __user *buffer, size_t count,lof
       
    return  *pos;
 }
-void yeild(unsigned int pid){
+void YIELD (unsigned int pid){
        
        struct mp2_task_struct* my_obj;
 
@@ -311,7 +327,9 @@ int __init mp2_init(void)
    kcache=kmem_cache_create("kcache",sizeof(struct mp2_task_struct),0,SLAB_HWCACHE_ALIGN,NULL);
 
    dispatcher=kthread_create(&dispatch_function, NULL,"dispatcher function");
-   
+
+   utilization=0;
+
    printk(KERN_ALERT "MP2 MODULE LOADED\n");
    return 0;   
 }
