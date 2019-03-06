@@ -13,45 +13,120 @@ int factorial(int n){
    }
    return res;
 }
-void cat_function(){
-
-printf("The cat /proc/mp1/status is following \n");
 
 
-FILE * file=fopen("/proc/mp1/status","r");
+void do_job(void){
 
-char buff[2048];
+      factorial(1000000000);
+      factorial(1000000000);
 
-ssize_t bytes=read(fileno(file),(void*)buff,2048);
-buff[bytes-1]='\0';
-printf("%s",buff);
+}
 
-fclose(file);
+void REGISTER(pid_t PID,unsigned long Period,unsigned long ProcessTime){
+
+   FILE *f=fopen("/proc/mp2/status","w");
+   fprintf(f, "R,%d,%d,%d", PID,Period,ProcessTime);
+   fclose(f);
+
+}
+
+int READ_STATUS(pid_t PID){
+  
+   FILE *f=fopen("/proc/mp2/status","r");
+
+   char buff[256];
+
+   while(fgets(buff,256,f)){
+
+     if(buff[])
+
+   }
 
 
 }
 
+void YIELD(pid_t PID){
 
+  FILE *f=fopen("/proc/mp2/status","r");
+  fprintf(f, "Y,%d", PID);
+
+
+}
+
+void DEREGISTER( pid_t PID){
+
+  FILE *f=fopen("/proc/mp2/status","r");
+  fprintf(f, "D,%d", PID);
+
+}
+
+// There should be three arguments period process time and number_of_iteations
 int main(int argc, char* argv[])
 {
-      int pid =getpid();
 
-      FILE * file =fopen("/proc/mp1/status","a");
+  struct timeval start;
+  struct timeval end;
+  gettimeofday(&start, NULL);
+  //factorial(1000000000);
+  //factorial(1000000000);
+  //factorial(1000000000);
+  //factorial(1000000000);
+  factorial(1000000000);
+  gettimeofday(&end, NULL);
+
+
+  int pid =getpid();
+
+  int ProcessTime=(int)(end.tv_usec-start.tv_usec)
+
+  int Period=3*ProcessTime;
+
+  int num_iterations=atio(argv[1]);
+
+
+/*
+  if(argc!=4){
+
+     printf("There should be three arguments following as period, process time and num_iterations\n");
+     return 0;
+  }
+
+  int pid =getpid();
+
+  int Period=atoi(argv[1]); 
+
+  int ProcessTime=atoi(argv[2]);
+
+  int num_iterations=atoi(argv[3]);
+*/
+    //FILE * file =fopen("/proc/mp2/status","a");
+
+  REGISTER(pid,Period,ProcessTime);
+
+  //int list=READ_STATUS(pid);
+
+  //if(list)
+
+  YIELD(pid);
+
+  int n=0;
+  while(num_iterations--){
+
+    printf("get into %d\n", n);
+
+    factorial(1000000000);
+    
+    printf("finish the %d job\n", n);
+
+    YIELD(pid);
+
+    n++;
+     
+    }
       
-     if(file){
-       fprintf(file,"%d\0",pid);
-       
-        printf("My pid is %d\n",pid);
-        fclose(file);
-        
-      }else{
-        printf("proc_file not create properly!");
-      }
-      factorial(1000000000);
-      factorial(1000000000);
-      factorial(1000000000);
-      factorial(1000000000);
-     // cat_function();
-      execlp("cat","cat","/proc/mp1/status",NULL);
-      return 0;
+    DEREGISTER(pid);
+
+    execlp("cat","cat","/proc/mp1/status",NULL);
+
+    return 0;
 }

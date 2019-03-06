@@ -28,6 +28,7 @@ MODULE_AUTHOR("yuguang2");
 MODULE_DESCRIPTION("CS-423 MP2");
 
 static spinlock_t my_lock;
+
 #define DEBUG 1
 static struct proc_dir_entry *proc_dir;
 static struct proc_dir_entry *proc_entry;
@@ -76,6 +77,7 @@ void registration(unsigned int pid, unsigned long period,unsigned slice){
            return; 
        }
         obj=(struct mp2_task_struct *)kmem_cache_alloc(kcache,GFP_KERNEL);
+
         obj->pid=pid;
         obj->relative_period=period;
         obj->slice=slice;
@@ -103,6 +105,7 @@ void deregistration(unsigned int pid){
      //static struct mp2_task_struct head;
 
     list_for_each_safe(pos,q,&new_list){
+
         static struct mp2_task_struct *tmp;  
         tmp=list_entry(pos,struct mp2_task_struct,my_list);
         if(tmp->pid==pid)
@@ -217,11 +220,11 @@ static ssize_t mp2_read(struct file *file ,char __user *buffer, size_t count,lof
 }
 void YIELD (unsigned int pid){
        
-       struct mp2_task_struct* my_obj;
+      struct mp2_task_struct* my_obj;
 
-       list_for_each_entry(my_obj,&new_list,my_list){
+      list_for_each_entry(my_obj,&new_list,my_list){
       
-         if(my_obj->pid==pid){
+        if(my_obj->pid==pid){
                 
                break;
          }
@@ -229,26 +232,34 @@ void YIELD (unsigned int pid){
       }
       if(my_obj->next_period < jiffies) 
       {
-      my_obj->next_period=jiffies+msecs_to_jiffies(my_obj->relative_period);
-      mod_timer(&(runnning_task->task_timer),runnning_task->next_period);
-      my_obj->task_state=READY;
+        // The first time yield 
+        // make sure the unit of relative period is msecs
+       my_obj->next_period=jiffies+msecs_to_jiffies(my_obj->relative_period);
+
+       mod_timer(&(my_obj->task_timer),my_obj->next_period);
+
+       my_obj->task_state=READY;
+
        wake_up_process(my_obj->task);
       }
      else{
+
        if(runnning_task->pid!=pid)
-         {    printk("error!");
+         {    
+              printk("error!");
               return;
          }      
-       mod_timer(&(runnning_task->task_timer),runnning_task->next_period);
+        mod_timer(&(runnning_task->task_timer),runnning_task->next_period);
 
-       runnning_task->next_period=runnning_task->next_period+msecs_to_jiffies(runnning_task->relative_period);
+        runnning_task->next_period=runnning_task->next_period+msecs_to_jiffies(runnning_task->relative_period);
 
-       runnning_task->task_state=SLEEP;
+        runnning_task->task_state=SLEEP;
       
-       set_task_state(runnning_task->task,TASK_UNINTERRUPTIBLE);
+        set_task_state(runnning_task->task,TASK_UNINTERRUPTIBLE);
       }
-       wake_up_process(dispatcher);
-       schedule();
+        wake_up_process(dispatcher);// priority of kthread 
+
+        schedule();
 
 }
 static int dispatch_function(void){
@@ -262,9 +273,11 @@ while (1){
   
   old_task=runnning_task;
   struct mp2_task_struct* my_obj;
+
   unsigned long least_period=INT_MAX;
 
   spin_lock(&my_lock);
+
   list_for_each_entry(my_obj,&new_list,my_list){
 
     if(my_obj->task_state==READY){
@@ -277,26 +290,41 @@ while (1){
     }
     spin_unlock(&my_lock);
     
-    runnning_task=next_task;
+    if(next_task!=old_task){
+       runnning_task=next_task;
 
-    struct sched_param sparam;
-    wake_up_process(runnning_task->task);
-    sparam.sched_priority=99;
-    sched_setscheduler(runnning_task->task, SCHED_FIFO, &sparam);
+       struct sched_param sparam;
+       wake_up_process(runnning_task->task);
+       sparam.sched_priority=99;
+       runnning_task->task_state=RUN;
+       sched_setscheduler(runnning_task->task, SCHED_FIFO, &sparam);
 
-    struct sched_param sparam2;
-    sparam2.sched_priority=0;
-    sched_setscheduler(old_task->task,SCHED_NORMAL,&sparam2);
+       struct sched_param sparam2;
+       sparam2.sched_priority=0;
+       sched_setscheduler(old_task->task,SCHED_NORMAL,&sparam2);
+
+    }
+
+    else{
+
+       struct sched_param sparam;
+       wake_up_process(runnning_task->task);
+       sparam.sched_priority=99;
+       runnning_task->task_state=RUN;
+       sched_setscheduler(runnning_task->task, SCHED_FIFO, &sparam);      
+
+    }
+   
 }
    return 0;
 }
 
 void my_timer_callback(unsigned long data)
 {
-   struct mp2_task_struct *obj;
+   //struct mp2_task_struct *obj;
 
-   obj->task_state=READY;
-   wake_up_process(obj->task);
+   data->task_state=READY;
+   wake_up_process(data->task);
 
    wake_up_process(dispatcher);
    schedule();   
@@ -342,11 +370,12 @@ void __exit mp2_exit(void)
    #endif  
   // Insert your code here ...
     //kthread_stop(dispatcher);
- 
-    static struct list_head *pos,*q;
+   static struct list_head *pos,*q;
 
    proc_remove(proc_entry);
+
    proc_remove(proc_dir);
+
    list_for_each_safe(pos,q,&new_list){
   
       static struct mp2_task_struct *tmp; 
@@ -363,4 +392,5 @@ void __exit mp2_exit(void)
    printk(KERN_ALERT "MP2 MODULE UNLOADED\n");
 }// Register init and exit funtions
 module_init(mp2_init);
+
 module_exit(mp2_exit);
