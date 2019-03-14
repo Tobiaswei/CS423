@@ -1,0 +1,100 @@
+[    7.156645] vgdrvHeartbeatInit: Setting up heartbeat to trigger every 2000 milliseconds
+[    7.168392] input: Unspecified device as /devices/pci0000:00/0000:00:04.0/input/input7
+[    7.169636] vboxguest: misc device minor 55, IRQ 20, I/O port d020, MMIO at 00000000f0400000 (size 0x400000)
+[    7.169638] vboxguest: Successfully loaded version 5.0.18_Ubuntu (interface 0x00010004)
+[    7.183216] [drm] Initialized drm 1.1.0 20060810
+[    7.221675] snd_intel8x0 0000:00:05.0: disable (unknown or VT-d) VM optimization
+[    7.715564] random: nonblocking pool is initialized
+[    7.734816] ppdev: user-space parallel port driver
+[    7.964737] EXT4-fs (sda1): mounting ext2 file system using the ext4 subsystem
+[    7.971559] Adding 4194300k swap on /dev/mapper/ubuntu--vg-swap_1.  Priority:-1 extents:1 across:4194300k FS
+[    7.971990] EXT4-fs (sda1): mounted filesystem without journal. Opts: (null)
+[    8.332635] audit: type=1400 audit(1552508953.804:2): apparmor="STATUS" operation="profile_load" profile="unconfined" name="lxc-container-default" pid=785 comm="apparmor_parser"
+[    8.332639] audit: type=1400 audit(1552508953.804:3): apparmor="STATUS" operation="profile_load" profile="unconfined" name="lxc-container-default-cgns" pid=785 comm="apparmor_parser"
+[    8.332641] audit: type=1400 audit(1552508953.804:4): apparmor="STATUS" operation="profile_load" profile="unconfined" name="lxc-container-default-with-mounting" pid=785 comm="apparmor_parser"
+[    8.332643] audit: type=1400 audit(1552508953.804:5): apparmor="STATUS" operation="profile_load" profile="unconfined" name="lxc-container-default-with-nesting" pid=785 comm="apparmor_parser"
+[    8.338124] audit: type=1400 audit(1552508953.808:6): apparmor="STATUS" operation="profile_load" profile="unconfined" name="/sbin/dhclient" pid=786 comm="apparmor_parser"
+[    8.338128] audit: type=1400 audit(1552508953.808:7): apparmor="STATUS" operation="profile_load" profile="unconfined" name="/usr/lib/NetworkManager/nm-dhcp-client.action" pid=786 comm="apparmor_parser"
+[    8.338131] audit: type=1400 audit(1552508953.808:8): apparmor="STATUS" operation="profile_load" profile="unconfined" name="/usr/lib/NetworkManager/nm-dhcp-helper" pid=786 comm="apparmor_parser"
+[    8.338134] audit: type=1400 audit(1552508953.808:9): apparmor="STATUS" operation="profile_load" profile="unconfined" name="/usr/lib/connman/scripts/dhclient-script" pid=786 comm="apparmor_parser"
+[    8.339292] audit: type=1400 audit(1552508953.808:10): apparmor="STATUS" operation="profile_load" profile="unconfined" name="/usr/bin/lxc-start" pid=787 comm="apparmor_parser"
+[    8.340614] audit: type=1400 audit(1552508953.812:11): apparmor="STATUS" operation="profile_load" profile="unconfined" name="/usr/bin/ubuntu-core-launcher" pid=788 comm="apparmor_parser"
+[    8.505263] IPv6: ADDRCONF(NETDEV_UP): enp0s3: link is not ready
+[    8.512008] e1000: enp0s3 NIC Link is Up 1000 Mbps Full Duplex, Flow Control: RX
+[    8.512286] IPv6: ADDRCONF(NETDEV_CHANGE): enp0s3: link becomes ready
+[    8.738313] cgroup: new mount options do not match the existing superblock, will be ignored
+[    9.528763] snd_intel8x0 0000:00:05.0: white list rate for 1028:0177 is 48000
+[    9.533149] [drm] VRAM 01000000
+[    9.538773] [TTM] Zone  kernel: Available graphics memory: 2023392 kiB
+[    9.538775] [TTM] Initializing pool allocator
+[    9.538778] [TTM] Initializing DMA pool allocator
+[    9.539135] fbcon: vboxdrmfb (fb0) is primary device
+[    9.545837] Console: switching to colour frame buffer device 100x37
+[    9.546794] vboxvideo 0000:00:02.0: fb0: vboxdrmfb frame buffer device
+[    9.546796] [drm] Initialized vboxvideo 1.0.0 20130823 for 0000:00:02.0 on minor 0
+[   10.224170] floppy0: no floppy controllers found
+[  111.524502] show_signal_msg: 12 callbacks suppressed
+[  111.524505] userapp[1600]: segfault at c0 ip 00007fa97a9fb194 sp 00007fff779cc6c0 error 4 in libc-2.23.so[7fa97a9ae000+1c0000]
+[  274.561361] userapp[2298]: segfault at c0 ip 00007fbe00eb1194 sp 00007ffe3a5f0710 error 4 in libc-2.23.so[7fbe00e64000+1c0000]
+[  291.725721] userapp[2300]: segfault at c0 ip 00007fec26a2a194 sp 00007ffd71321dd0 error 4 in libc-2.23.so[7fec269dd000+1c0000]
+[  299.634008] mp2: module verification failed: signature and/or required key missing - tainting kernel
+[  299.635163] MP2 MODULE LOADING
+[  299.635678] MP2 MODULE LOADED
+[  304.093043] get into write!Registration:the value of pid is 2305 period is 1040 computation time is 260
+[  304.093892] get into write!YIELD: the value of pid is 2305
+[  304.093895] first time yield the function!
+[  304.360725] get into write!YIELD: the value of pid is 2305
+[  304.360730] get into general yield routine
+[  304.624084] get into write!YIELD: the value of pid is 2305
+[  304.624089] get into general yield routine
+[  304.888327] get into write!YIELD: the value of pid is 2305
+[  304.888333] get into general yield routine
+[  305.149266] get into write!YIELD: the value of pid is 2305
+[  305.149279] get into general yield routine
+[  305.246268] sched: RT throttling activated
+[  309.302001] get 0 into timer 
+[  309.472550] get into write!YIELD: the value of pid is 2305
+[  309.472556] get into general yield routine
+[  309.472989] pid is 2305 period is 1040 computation time 260
+[  309.472991] my_buff is 2305 : 1040  :260
+
+[  310.334411] get 0 into timer 
+[  310.334467] BUG: unable to handle kernel NULL pointer dereference at 0000000000000030
+[  310.335212] IP: [<ffffffff81341e07>] cap_safe_nice+0x37/0xa0
+[  310.335599] PGD 0 
+[  310.336045] Oops: 0000 [#1] SMP 
+[  310.336456] Modules linked in: mp2(OE) ppdev vboxvideo ttm snd_intel8x0 drm_kms_helper input_leds serio_raw joydev snd_ac97_codec ac97_bus drm snd_pcm snd_timer fb_sys_fops parport_pc 8250_fintek parport syscopyarea sysfillrect sysimgblt snd soundcore i2c_piix4 vboxguest mac_hid ib_iser rdma_cm iw_cm ib_cm ib_sa ib_mad ib_core ib_addr iscsi_tcp libiscsi_tcp libiscsi scsi_transport_iscsi autofs4 btrfs raid10 raid456 async_raid6_recov async_memcpy async_pq async_xor async_tx xor raid6_pq libcrc32c raid1 raid0 multipath linear hid_generic usbhid hid crct10dif_pclmul crc32_pclmul aesni_intel aes_x86_64 lrw gf128mul glue_helper ablk_helper cryptd psmouse ahci libahci e1000 pata_acpi fjes video
+[  310.339241] CPU: 0 PID: 2304 Comm: dispatcher func Tainted: G           OE   4.4.0-31-generic #50-Ubuntu
+[  310.340021] Hardware name: innotek GmbH VirtualBox/VirtualBox, BIOS VirtualBox 12/01/2006
+[  310.340442] task: ffff8800d8261b80 ti: ffff8800d7c34000 task.ti: ffff8800d7c34000
+[  310.340837] RIP: 0010:[<ffffffff81341e07>]  [<ffffffff81341e07>] cap_safe_nice+0x37/0xa0
+[  310.341243] RSP: 0018:ffff8800d7c37d70  EFLAGS: 00010246
+[  310.341719] RAX: 0000003fffffffff RBX: ffffffff81e98400 RCX: 0000000000000001
+[  310.342126] RDX: 0000000000000000 RSI: ffffffff81e42960 RDI: ffff8800d82644c0
+[  310.342526] RBP: ffff8800d7c37d78 R08: ffffffff81e42960 R09: 0000000000000001
+[  310.342930] R10: ffff8800d82644c0 R11: 0000000000000000 R12: ffff8800d82644c0
+[  310.343339] R13: 0000000000016d00 R14: 0000000000000001 R15: ffff8800d82644c0
+[  310.343750] FS:  0000000000000000(0000) GS:ffff88011fc00000(0000) knlGS:0000000000000000
+[  310.344176] CS:  0010 DS: 0000 ES: 0000 CR0: 000000008005003b
+[  310.344585] CR2: 0000000000000030 CR3: 00000000dbb74000 CR4: 00000000000406f0
+[  310.344983] Stack:
+[  310.345403]  00000000308ed75c ffff8800d7c37d88 ffffffff81341e7e ffff8800d7c37da8
+[  310.345788]  ffffffff81345e33 0000000000000001 ffff8800d7c37e9c ffff8800d7c37e30
+[  310.346196]  ffffffff810a9d0f ffff8800d8261b80 00000000ffffffff 00000000d7c34000
+[  310.346588] Call Trace:
+[  310.346979]  [<ffffffff81341e7e>] cap_task_setscheduler+0xe/0x10
+[  310.347380]  [<ffffffff81345e33>] security_task_setscheduler+0x33/0x50
+[  310.347826]  [<ffffffff810a9d0f>] __sched_setscheduler+0x40f/0xa00
+[  310.348236]  [<ffffffffc0384040>] ? my_timer_callback+0x40/0x40 [mp2]
+[  310.348648]  [<ffffffff810aa376>] _sched_setscheduler+0x76/0x90
+[  310.349062]  [<ffffffff810aa3a3>] sched_setscheduler+0x13/0x20
+[  310.349466]  [<ffffffffc038415a>] dispatch_function+0x11a/0x1a0 [mp2]
+[  310.349864]  [<ffffffff810a0808>] kthread+0xd8/0xf0
+[  310.350255]  [<ffffffff810a0730>] ? kthread_create_on_node+0x1e0/0x1e0
+[  310.350651]  [<ffffffff8182decf>] ret_from_fork+0x3f/0x70
+[  310.351046]  [<ffffffff810a0730>] ? kthread_create_on_node+0x1e0/0x1e0
+[  310.351483] Code: 08 65 48 8b 04 25 28 00 00 00 48 89 45 f8 31 c0 65 48 8b 04 25 c0 d3 00 00 48 8b 80 d0 05 00 00 48 8b 97 c8 05 00 00 48 8b 40 30 <48> 8b 72 30 48 89 c2 48 89 f1 f7 d0 48 c1 ea 20 48 c1 e9 20 f7 
+[  310.352722] RIP  [<ffffffff81341e07>] cap_safe_nice+0x37/0xa0
+[  310.353104]  RSP <ffff8800d7c37d70>
+[  310.353471] CR2: 0000000000000030
+[  310.353827] ---[ end trace 1a5c810c588928ab ]---

@@ -79,40 +79,36 @@ unsigned long get_usec(){
 
 // There should be three arguments period process time and number_of_iteations
 int main(int argc, char* argv[])
-
 {
 
-if(argc!=4){
-
-     printf("There should be three arguments following as period, process time and num_iterations\n");
-     return 0;
-  }
-
-
+  //struct timeval start;
+ // struct timeval end;
   
+ // gettimeofday(&start, NULL);
  unsigned long t0,t1;
 
- //  
+  t0=get_usec();
+  
+  factorial(100000000);
+
+ // gettimeofday(&end, NULL);
+  t1=get_usec();
+ 
   int pid =getpid();
 
-  int Period=atoi(argv[1]); 
+  int ProcessTime;
 
-  int ProcessTime=atoi(argv[2]);
+  if(t1-t0>0){
 
-  int num_iterations=atoi(argv[3]);
-
-///  int ProcessTime;
-
-  while(t1-t0>0){
-
-     t0=get_usec();
-  
-     factorial(100000000);
-
-     t1=get_usec();
+     printf("sssssssssthe value is %d\n",(int)(t1-t0)/(1000));
+     ProcessTime=(int)(t1-t0)/1000;
 
   }
-  
+  else{
+
+    printf("Not success read it!\n");
+ 
+    }
   srand(time(NULL));
 
   int random=rand()%5+5;
@@ -122,10 +118,22 @@ if(argc!=4){
   int num_iterations=atoi(argv[1]);
 
   printf("The value of is %d,%d,%d",pid,Period, ProcessTime);
+/*
+  if(argc!=4){
 
-   int pid =getpid();
+     printf("There should be three arguments following as period, process time and num_iterations\n");
+     return 0;
+  }
 
-/
+  int pid =getpid();
+
+  int Period=atoi(argv[1]); 
+
+  int ProcessTime=atoi(argv[2]);
+
+  int num_iterations=atoi(argv[3]);
+*/
+
   REGISTER(pid,Period,ProcessTime);
 
   //int list=READ_STATUS(pid);
