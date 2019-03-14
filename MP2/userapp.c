@@ -48,7 +48,6 @@ int READ_STATUS(pid_t PID){
 
 }
 */
-
 void YIELD(pid_t PID){
 
   FILE *f=fopen("/proc/mp2/status","w");
@@ -82,12 +81,13 @@ int main(int argc, char* argv[])
 
 {
 
+/*
 if(argc!=4){
 
      printf("There should be three arguments following as period, process time and num_iterations\n");
      return 0;
   }
-
+*/
 
   
  unsigned long t0,t1;
@@ -95,23 +95,21 @@ if(argc!=4){
  //  
   int pid =getpid();
 
-  int Period=atoi(argv[1]); 
+//  int Period=atoi(argv[1]); 
 
-  int ProcessTime=atoi(argv[2]);
+  //int ProcessTime=atoi(argv[2]);
 
-  int num_iterations=atoi(argv[3]);
+  //int num_iterations=atoi(argv[3]);
 
 ///  int ProcessTime;
 
-  while(t1-t0>0){
-
-     t0=get_usec();
   
-     factorial(100000000);
 
-     t1=get_usec();
+   t0=get_usec();
+  
+   factorial(100000000);
 
-  }
+   t1=get_usec();
   
   srand(time(NULL));
 
@@ -121,16 +119,15 @@ if(argc!=4){
 
   int num_iterations=atoi(argv[1]);
 
+  printf("random number is %d\n", random);
+
   printf("The value of is %d,%d,%d",pid,Period, ProcessTime);
 
-   int pid =getpid();
 
-/
   REGISTER(pid,Period,ProcessTime);
 
   //int list=READ_STATUS(pid);
 
-  //if(list)
 
   YIELD(pid);
 
