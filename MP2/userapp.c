@@ -16,13 +16,15 @@ int factorial(int n){
    return res;
 }
 
+void do_job(int num){
 
-void do_job(void){
+ while(num--){
 
-      factorial(1000000000);
-      factorial(1000000000);
+    factorial(100000000);
+  }
 
 }
+
 
 void REGISTER(pid_t PID,int Period,int ProcessTime){
 
@@ -32,22 +34,34 @@ void REGISTER(pid_t PID,int Period,int ProcessTime){
    fclose(f);
 
 }
-/*
+
 int READ_STATUS(pid_t PID){
   
    FILE *f=fopen("/proc/mp2/status","r");
 
    char buff[256];
 
+   pid_t curr_pid;
+
+   printf("checking the register pid\n");
+
    while(fgets(buff,256,f)){
 
-     if(buff[])
+     sscanf(buff,"%d%*s",&curr_pid);
+
+     if(curr_pid==PID){
+            fclose(f);
+
+            return 1;
+      }
 
    }
-
+  fclose(f);
+  printf("PID: %d falied register\n",PID);
+  return 0;
 
 }
-*/
+
 void YIELD(pid_t PID){
 
   FILE *f=fopen("/proc/mp2/status","w");
@@ -80,54 +94,42 @@ unsigned long get_usec(){
 int main(int argc, char* argv[])
 
 {
-
-/*
-if(argc!=4){
-
-     printf("There should be three arguments following as period, process time and num_iterations\n");
-     return 0;
-  }
-*/
-
   
- unsigned long t0,t1;
+   unsigned long t0,t1;
 
- //  
-  int pid =getpid();
+   int pid =getpid();
 
-//  int Period=atoi(argv[1]); 
-
-  //int ProcessTime=atoi(argv[2]);
-
-  //int num_iterations=atoi(argv[3]);
-
-///  int ProcessTime;
-
-  
+   int num=atoi(argv[2]);
 
    t0=get_usec();
   
-   factorial(100000000);
+  // factorial(100000000);
+
+   do_job(num);
 
    t1=get_usec();
   
-  srand(time(NULL));
+   srand(time(NULL));
 
-  int random=rand()%5+5;
+   int ProcessTime=(int)(t1-t0)/1000;
 
-  int Period= random*ProcessTime;
+   int random=rand()%3+3;
 
-  int num_iterations=atoi(argv[1]);
+   int Period= random*ProcessTime;
 
-  printf("random number is %d\n", random);
+   int num_iterations=atoi(argv[1]);
 
-  printf("The value of is %d,%d,%d",pid,Period, ProcessTime);
+   printf("random number is %d\n", random);
+
+   printf("The value of is %d,%d,%d",pid,Period, ProcessTime);
 
 
-  REGISTER(pid,Period,ProcessTime);
+   REGISTER(pid,Period,ProcessTime);
 
-  //int list=READ_STATUS(pid);
-
+  if(READ_STATUS(pid)==0){
+              
+        return 0;
+   }
 
   YIELD(pid);
 
@@ -135,11 +137,12 @@ if(argc!=4){
   
    while(num_iterations--){
 
-    printf("get into %d\n", n);
+    printf("pid : %d  get into %dth circle \n",pid,n);
 
-    factorial(100000000);
+    //factorial(100000000);
+    do_job(num);
     
-    printf("finish the %d job\n", n);
+    printf("pid: %d  finish the %dth circle\n", pid,n);
 
     YIELD(pid);
 
