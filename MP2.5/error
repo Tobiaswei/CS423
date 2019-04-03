@@ -1,0 +1,94 @@
+rm -f userapp *~ *.ko *.o *.mod.c Module.symvers modules.order
+make -C /lib/modules/4.4.0-31-generic/build M=/home/tobias/MP/CS423/MP2 modules
+make[1]: Entering directory '/usr/src/linux-headers-4.4.0-31-generic'
+  CC [M]  /home/tobias/MP/CS423/MP2/mp2.o
+/home/tobias/MP/CS423/MP2/mp2.c: In function ‘mp2_write’:
+/home/tobias/MP/CS423/MP2/mp2.c:149:5: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
+     unsigned int pid;
+     ^
+/home/tobias/MP/CS423/MP2/mp2.c:162:24: warning: format ‘%lu’ expects argument of type ‘long unsigned int *’, but argument 3 has type ‘unsigned int *’ [-Wformat=]
+         sscanf(command,"R,%lu,%lu,%lu",&pid,&period,&slice);
+                        ^
+/home/tobias/MP/CS423/MP2/mp2.c:171:25: warning: format ‘%lu’ expects argument of type ‘long unsigned int *’, but argument 3 has type ‘unsigned int *’ [-Wformat=]
+          sscanf(command,"Y,%lu",&pid);
+                         ^
+/home/tobias/MP/CS423/MP2/mp2.c:180:25: warning: format ‘%lu’ expects argument of type ‘long unsigned int *’, but argument 3 has type ‘unsigned int *’ [-Wformat=]
+          sscanf(command,"D,%lu",&pid);
+                         ^
+/home/tobias/MP/CS423/MP2/mp2.c: In function ‘mp2_read’:
+/home/tobias/MP/CS423/MP2/mp2.c:199:3: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
+   struct mp2_task_struct* my_obj;
+   ^
+/home/tobias/MP/CS423/MP2/mp2.c:207:25: warning: format ‘%lu’ expects argument of type ‘long unsigned int’, but argument 3 has type ‘unsigned int’ [-Wformat=]
+         sprintf(my_buff,"%lu : %lu  :%lu\n",my_obj->pid,my_obj->relative_period,my_obj->slice);
+                         ^
+/home/tobias/MP/CS423/MP2/mp2.c: In function ‘YIELD’:
+/home/tobias/MP/CS423/MP2/mp2.c:245:25: warning: format ‘%lu’ expects argument of type ‘long unsigned int’, but argument 2 has type ‘unsigned int’ [-Wformat=]
+        if(DEBUG) printk("pid:%lu first time yield the function!\n",yield_process->pid);
+                         ^
+/home/tobias/MP/CS423/MP2/mp2.c:253:25: warning: format ‘%lu’ expects argument of type ‘long unsigned int’, but argument 2 has type ‘unsigned int’ [-Wformat=]
+        if(DEBUG) printk("pid : %lu get into general yield routine\n",yield_process->pid);
+                         ^
+/home/tobias/MP/CS423/MP2/mp2.c:261:27: warning: format ‘%lu’ expects argument of type ‘long unsigned int’, but argument 2 has type ‘unsigned int’ [-Wformat=]
+          if(DEBUG) printk("pid : %lu less than the period time\n", yield_process->pid);
+                           ^
+/home/tobias/MP/CS423/MP2/mp2.c: In function ‘dispatch_function’:
+/home/tobias/MP/CS423/MP2/mp2.c:285:3: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
+   struct mp2_task_struct* my_obj;
+   ^
+/home/tobias/MP/CS423/MP2/mp2.c:321:66: error: ‘runnig_task’ undeclared (first use in this function)
+        if(running_task!=NULL && running_task->task_state==RUN && runnig_task->relative_period<
+                                                                  ^
+/home/tobias/MP/CS423/MP2/mp2.c:321:66: note: each undeclared identifier is reported only once for each function it appears in
+/home/tobias/MP/CS423/MP2/mp2.c:322:14: error: ‘next_period’ undeclared (first use in this function)
+              next_period->relative_period)
+              ^
+/home/tobias/MP/CS423/MP2/mp2.c:337:12: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
+            struct sched_param sparam;
+            ^
+/home/tobias/MP/CS423/MP2/mp2.c:349:29: warning: format ‘%lu’ expects argument of type ‘long unsigned int’, but argument 2 has type ‘unsigned int’ [-Wformat=]
+            if(DEBUG) printk("scheduling task PID: %lu\n",next_task->pid);
+                             ^
+/home/tobias/MP/CS423/MP2/mp2.c: In function ‘my_timer_callback’:
+/home/tobias/MP/CS423/MP2/mp2.c:366:11: warning: format ‘%d’ expects a matching ‘int’ argument [-Wformat=]
+    printk("PID: %d into timer and the state of task being %d\n",obj->pid);
+           ^
+/home/tobias/MP/CS423/MP2/mp2.c: At top level:
+/home/tobias/MP/CS423/MP2/mp2.c:376:9: warning: initialization from incompatible pointer type [-Wincompatible-pointer-types]
+  .write=mp2_write,
+         ^
+/home/tobias/MP/CS423/MP2/mp2.c:376:9: note: (near initialization for ‘mp2_file.write’)
+/home/tobias/MP/CS423/MP2/mp2.c: In function ‘mp2_init’:
+/home/tobias/MP/CS423/MP2/mp2.c:387:4: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
+    int ret;
+    ^
+In file included from /home/tobias/MP/CS423/MP2/mp2.c:17:0:
+/home/tobias/MP/CS423/MP2/mp2.c:395:27: warning: passing argument 1 of ‘kthread_create_on_node’ from incompatible pointer type [-Wincompatible-pointer-types]
+    dispatcher=kthread_run(dispatch_function, NULL,"dispatcher function");
+                           ^
+include/linux/kthread.h:14:25: note: in definition of macro ‘kthread_create’
+  kthread_create_on_node(threadfn, data, NUMA_NO_NODE, namefmt, ##arg)
+                         ^
+/home/tobias/MP/CS423/MP2/mp2.c:395:15: note: in expansion of macro ‘kthread_run’
+    dispatcher=kthread_run(dispatch_function, NULL,"dispatcher function");
+               ^
+include/linux/kthread.h:8:21: note: expected ‘int (*)(void *)’ but argument is of type ‘int (*)(void)’
+ struct task_struct *kthread_create_on_node(int (*threadfn)(void *data),
+                     ^
+/home/tobias/MP/CS423/MP2/mp2.c:387:8: warning: unused variable ‘ret’ [-Wunused-variable]
+    int ret;
+        ^
+/home/tobias/MP/CS423/MP2/mp2.c: In function ‘mp2_exit’:
+/home/tobias/MP/CS423/MP2/mp2.c:410:3: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
+   int ret=kthread_stop(dispatcher);
+   ^
+/home/tobias/MP/CS423/MP2/mp2.c:414:4: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
+    static struct list_head *pos,*q;
+    ^
+scripts/Makefile.build:264: recipe for target '/home/tobias/MP/CS423/MP2/mp2.o' failed
+make[2]: *** [/home/tobias/MP/CS423/MP2/mp2.o] Error 1
+Makefile:1403: recipe for target '_module_/home/tobias/MP/CS423/MP2' failed
+make[1]: *** [_module_/home/tobias/MP/CS423/MP2] Error 2
+make[1]: Leaving directory '/usr/src/linux-headers-4.4.0-31-generic'
+Makefile:15: recipe for target 'modules' failed
+make: *** [modules] Error 2

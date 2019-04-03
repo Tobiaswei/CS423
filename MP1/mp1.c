@@ -143,25 +143,23 @@ void my_timer_callback(unsigned long data)
 //   int ret;
     //first allocate memory for work queue
    struct work_struct *work=(struct work_struct *)kmalloc(sizeof(struct work_struct),GFP_KERNEL);
+
    INIT_WORK((struct work_struct*)work,my_wq_function);
+
    queue_work(my_wq,(struct work_struct*)work);
 
    setup_timer(&my_timer,my_timer_callback,0);
+
    mod_timer(&my_timer,jiffies+msecs_to_jiffies(5000));//5 second
+
 }
->>>>>>> 6a37b56e99551959fbc9c42882c6113fddced4b4
 // mp1_init - Called when module is loaded
 int __init mp1_init(void)
 {
    #ifdef DEBUG
    printk(KERN_ALERT "MP1 MODULE LOADING\n");
    #endif
-<<<<<<< HEAD
-   // Insert your code here ...
-   
-   
-   
-=======
+
    spin_lock_init(&my_lock);
    int ret;
    // Insert your code here ...
@@ -174,7 +172,7 @@ int __init mp1_init(void)
    setup_timer(&my_timer,my_timer_callback,0);
    ret=mod_timer(&my_timer,jiffies+msecs_to_jiffies(5000));
    if(ret) printk("Error in mod_timer\n");
->>>>>>> 6a37b56e99551959fbc9c42882c6113fddced4b4
+
    printk(KERN_ALERT "MP1 MODULE LOADED\n");
    return 0;   
 }
@@ -184,18 +182,8 @@ void __exit mp1_exit(void)
 {
    #ifdef DEBUG
    printk(KERN_ALERT "MP1 MODULE UNLOADING\n");
-<<<<<<< HEAD
    #endif
-   // Insert your code here ...
-   
-   
-
-   printk(KERN_ALERT "MP1 MODULE UNLOADED\n");
-}
-
-// Register init and exit funtions
-=======
-   #endif  
+ 
   // Insert your code here ...
    static struct list_head *pos,*q;
    static struct list_node head;
@@ -213,6 +201,6 @@ void __exit mp1_exit(void)
     }
    printk(KERN_ALERT "MP1 MODULE UNLOADED\n");
 }// Register init and exit funtions
->>>>>>> 6a37b56e99551959fbc9c42882c6113fddced4b4
+
 module_init(mp1_init);
 module_exit(mp1_exit);
