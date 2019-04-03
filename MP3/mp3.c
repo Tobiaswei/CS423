@@ -1,19 +1,19 @@
 #define LINUX
 
-#include<asm/uaccess.h>//(copy_from_user)
+#include <asm/uaccess.h>//(copy_from_user)
 #include <linux/module.h>
 #include <linux/kernel.h>
-#include<linux/slab.h>// kmalloc;
+#include <linux/slab.h>// kmalloc;
+#include <linux/sched.h>
 #include "mp3_given.h" //get_cpu_time;
 #include <linux/list.h>
 #include <linux/proc_fs.h> 
 #include <linux/time.h>
-#include<linux/string.h>
+#include <linux/string.h>
 #include <linux/workqueue.h>
 #include <linux/spinlock.h>
 #include <linux/vmalloc.h>
-#include <linux/sched.h>
-
+#include <linux/mm.h>
 #include <linux/cdev.h>
 #include <linux/fs.h>
 
@@ -22,7 +22,7 @@
 
 #define DEBUG 1
 
-#define PAGE_SIZE 4096
+#define PAGE_S 4096
 
 #define PAGE_NUM 128
 
@@ -39,9 +39,9 @@ static spinlock_t my_lock;// spin_lock
 static struct proc_dir_entry *proc_dir;
 static struct proc_dir_entry *proc_entry;
 
+struct work_struct * work=NULL;
 static struct workqueue_struct *my_wq=NULL; //workqueu declaration 
-
-struct work_struct *work=(struct work_struct *)kmalloc(sizeof(struct work_struct),GFP_KERNEL);
+struct kmem_cache * kcache=NULL;
 
 unsigned long * buff; // kernel shared buffer
 
@@ -67,7 +67,7 @@ typedef struct mp3_task_struct{
 
 }mp3_task_struct;
 
-
+static void my_wq_function(struct work_struct *work);//declare of the workqueue function 
 void static _init_queue(void){
 
   my_wq=create_workqueue("my_queue");
@@ -89,11 +89,13 @@ void static _delete_queue(void){
 
 void Registration(unsigned int pid){
 
+  if(DEBUG) printk("PID : %lu register\n");
 
   if(size_list==0){
 
     _init_queue();
 
+    work=(struct work_struct *)kmalloc(sizeof(struct work_struct),GFP_KERNEL);
     INIT_WORK((struct work_struct*)work,my_wq_function);
 
     queue_delayed_work(my_wq,(struct work_struct *)work,msecs_to_jiffies(1000/20));
@@ -126,6 +128,8 @@ void Registration(unsigned int pid){
 }
 
 void Unregistration(unsigned int pid){
+
+    if(DEBUG) printk("PID : %lu Unregister\n");
 
     static struct list_head *pos,*q;
 
@@ -238,19 +242,19 @@ static void my_wq_function(struct work_struct *work){
 
       if(index>MAX_NUM_SAMPLES*NUM_ITEMS)
       {
-         pritnk("Save up to maximun number of samples\n");
+         printk("Save up to maximun number of samples\n");
 
          return;
       }
 
-      int ret=get_cpu_time(my_obj->pid,&minor_c,&major_c,&utime,&stime);
+      int ret=get_cpu_use(my_obj->pid,&minor_c,&major_c,&utime,&stime);
 
       if(ret==-1)
       {
-
-        printf("Cannot get process: %d profile information\n",my_obj->pid);
-
+        printk("Cannot get process: %d profile information\n",my_obj->pid);
        }
+      
+      if(DEBUG) printk("1.%lu 2.%lu 3%lu 4%lu\n",jiffies,minor_c,major_c,stime+utime);
 
        buff[index++]=jiffies;
        buff[index++]=minor_c;
@@ -261,12 +265,15 @@ static void my_wq_function(struct work_struct *work){
 
    spin_unlock(&my_lock);
 
-   flush_workqueue(my_wq);
+   //flush_workqueue(my_wq);
 
+  // struct work_struct *work=(struct work_struct *)kmalloc(sizeof(struct work_struct),GFP_KERNEL);
+   if(work!=NULL)
+   {
    INIT_WORK((struct work_struct*)work,my_wq_function);
 
    queue_delayed_work(my_wq,(struct work_struct *)work,msecs_to_jiffies(1000/20));
- 
+   }
 }
 
 static const struct file_operations mp3_file={
@@ -296,19 +303,21 @@ static int my_mmap(struct file *filp, struct vm_area_struct *vma){
 
   unsigned long map_start_addr=vma->vm_start;
 
-  for(int i=0;i<PAGE_NUM;i++){
+  int i;
+
+  for( i=0;i<PAGE_NUM;i++){
 
         pfn=vmalloc(buff_add);
 
-        buff_add+=PAGE_SIZE/sizeof(unsigned long);
+        buff_add+=PAGE_S/sizeof(unsigned long);
 
-        int ret=remap_pfn_range(vma,map_start_addr,pfn,PAGE_SIZE,vma->vm_page_prot);
+        int ret=remap_pfn_range(vma,map_start_addr,pfn,PAGE_S,vma->vm_page_prot);
 
         map_start_addr+=(unsigned long)((vma->vm_end)-(vma->vm_start))/PAGE_NUM;
 
         if (ret < 0) 
         {
-             pritnk("could not map the address area\n");
+             printk("could not map the address area\n");
 
              return -1;
         }
@@ -324,7 +333,7 @@ static const struct file_operations my_fops={
  .owner=THIS_MODULE,
  .open=my_open,
  .release=my_release,
- .mmap=my_mmap;
+ .mmap=my_mmap,
 
 };
 
@@ -342,7 +351,7 @@ int __init mp3_init(void)
    proc_entry=proc_create(FILENAME,0666,proc_dir,&mp3_file); 
 
    //Initialization of the kernel Buffer
-   buff=(unsigned long*)vmalloc(PAGE_NUM*PAGE_SIZE);
+   buff=(unsigned long*)vmalloc(PAGE_NUM*PAGE_S);
 
    _init_queue();
 
@@ -364,7 +373,7 @@ int __init mp3_init(void)
 void __exit mp3_exit(void)
 {
     #ifdef DEBUG
-    printk(KERN_ALERT "MP2 MODULE UNLOADING\n");
+    printk(KERN_ALERT "MP3 MODULE UNLOADING\n");
    #endif  
   // Insert your code here ...
 
@@ -374,7 +383,7 @@ void __exit mp3_exit(void)
 
     proc_remove(proc_dir);// rm the directory 
 
-    kfree(buff);
+    vfree(buff);
 
     unregister_chrdev(100,"mp3");
 

@@ -1,0 +1,1 @@
+cmd_/home/yuguang2/CS423/MP3/mp3.ko := ld -r -m elf_x86_64 -T ./scripts/module-common.lds --build-id  -o /home/yuguang2/CS423/MP3/mp3.ko /home/yuguang2/CS423/MP3/mp3.o /home/yuguang2/CS423/MP3/mp3.mod.o
