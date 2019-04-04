@@ -22,8 +22,6 @@
 
 #define DEBUG 1
 
-#define PAGE_S 4096
-
 #define PAGE_NUM 128
 
 #define MAX_NUM_SAMPLES (20*600)
@@ -315,12 +313,12 @@ static int my_mmap(struct file *filp, struct vm_area_struct *vma){
         pfn=vmalloc_to_pfn(buff_add);
 
        // buff_add+=PAGE_S/sizeof(unsigned long);
-        buff_add+=PAGE_S;
+        buff_add+=PAGE_SIZE;
 
-        int ret=remap_pfn_range(vma,map_start_addr,pfn,PAGE_S,vma->vm_page_prot);
+        int ret=remap_pfn_range(vma,map_start_addr,pfn,PAGE_SIZE,vma->vm_page_prot);
 
         // map_start_addr+=(unsigned long)((vma->vm_end)-(vma->vm_start))/PAGE_NUM;
-         map_start_addr+=PAGE_S;
+         map_start_addr+=PAGE_SIZE;
 
         //if(DEBUG && i%32==0) printk()
         if (ret < 0) 
@@ -359,7 +357,7 @@ int __init mp3_init(void)
    proc_entry=proc_create(FILENAME,0666,proc_dir,&mp3_file); 
 
    //Initialization of the kernel Buffer
-   buff=(unsigned long*)vmalloc(PAGE_NUM*PAGE_S);
+   buff=(unsigned long*)vmalloc(PAGE_NUM*PAGE_SIZE);
 
    _init_queue();
 
@@ -409,8 +407,6 @@ void __exit mp3_exit(void)
     }
 
     spin_unlock(&my_lock);
-
-  //  cancel_delayed_work(&work);
 
     _delete_queue();
 
