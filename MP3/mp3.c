@@ -73,7 +73,7 @@ void static _init_queue(void){
 
   my_wq=create_workqueue("my_queue");
 }
-
+/*
 void static _delete_queue(void){
 
   if(my_wq!=NULL){
@@ -86,7 +86,7 @@ void static _delete_queue(void){
 
   }
 
-}
+}*/
 
 void Registration(int pid){
 
@@ -158,8 +158,10 @@ void Unregistration(int pid){
 
     if(size_list==0){
      //delete the work;
-       _delete_queue();
+      // _delete_queue();
+       cancel_delayed_work(&delayed_work);
 
+       flush_workqueue(my_wq);
     }
 
 }
@@ -410,7 +412,12 @@ void __exit mp3_exit(void)
 
     spin_unlock(&my_lock);
 
-    _delete_queue();
+   // _delete_queue();
+
+    cancel_delayed_work(&delayed_work);
+    flush_workqueue(my_wq);
+
+   destroy_workqueue(my_wq);
 
    if(kcache) kmem_cache_destroy(kcache);
    // kthread_stop(dispatcher);
