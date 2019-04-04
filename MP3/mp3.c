@@ -235,7 +235,7 @@ static void my_wq_function(struct work_struct *work){
   unsigned long minor_c;
   unsigned long stime;
   unsigned long utime;
-
+  unsigned long maj_sum=0,min_sum=0,cpu_sum=0;
   spin_lock(&my_lock);
   //read from list
   list_for_each_entry(my_obj,&new_list,my_list){
@@ -252,19 +252,22 @@ static void my_wq_function(struct work_struct *work){
       if(ret==-1)
       {
         printk("Cannot get process: %d profile information\n",my_obj->pid);
+        continue;
        }
       
-      if(DEBUG) printk("1.%lu 2.%lu 3%lu 4%lu\n",jiffies,minor_c,major_c,stime+utime);
-
-       buff[index++]=jiffies;
-       buff[index++]=minor_c;
-       buff[index++]=major_c;
-       buff[index++]=stime+utime;
-   
+      maj_sum+=major_c;
+      min_sum+=minor_c;
+      cpu_sum+=(utime+stime);
       }
 
    spin_unlock(&my_lock);
+  
+    buff[index++]=jiffies;
+    buff[index++]=min_sum;
+    buff[index++]=maj_sum;
+    buff[index++]=cpu_sum;
 
+    if(DEBUG) printk("1.%lu 2.%lu 3%lu 4%lu\n",jiffies, min_sum,maj_sum,cpu_sum);
    //flush_workqueue(my_wq);
 
   // struct work_struct *work=(struct work_struct *)kmalloc(sizeof(struct work_struct),GFP_KERNEL);
@@ -307,14 +310,17 @@ static int my_mmap(struct file *filp, struct vm_area_struct *vma){
 
   for( i=0;i<PAGE_NUM;i++){
 
-        pfn=vmalloc(buff_add);
+        pfn=vmalloc_to_pfn(buff_add);
 
-        buff_add+=PAGE_S/sizeof(unsigned long);
+       // buff_add+=PAGE_S/sizeof(unsigned long);
+        buff_add+=PAGE_S;
 
         int ret=remap_pfn_range(vma,map_start_addr,pfn,PAGE_S,vma->vm_page_prot);
 
-        map_start_addr+=(unsigned long)((vma->vm_end)-(vma->vm_start))/PAGE_NUM;
+        // map_start_addr+=(unsigned long)((vma->vm_end)-(vma->vm_start))/PAGE_NUM;
+         map_start_addr+=PAGE_S;
 
+        //if(DEBUG && i%32==0) printk()
         if (ret < 0) 
         {
              printk("could not map the address area\n");
