@@ -182,7 +182,7 @@ ssize_t mp3_write(struct file* flip, const char __user *buff,
 
     if(command[0]=='R'){
 
-        sscanf(command,"R,%d",&pid);
+        sscanf(command,"R %d",&pid);
 
         Registration(pid);
 
@@ -190,7 +190,7 @@ ssize_t mp3_write(struct file* flip, const char __user *buff,
 
     if(command[0]=='U'){
 
-        sscanf(command,"U,%d",&pid);
+        sscanf(command,"U %d",&pid);
 
         Registration(pid);
 
@@ -270,12 +270,11 @@ static void my_wq_function(struct work_struct *work){
     if(DEBUG) printk("1.%lu 2.%lu 3%lu 4%lu\n",jiffies, min_sum,maj_sum,cpu_sum);
    //flush_workqueue(my_wq);
 
-//    work=(struct work_struct *)kmalloc(sizeof(struct work_struct),GFP_KERNEL);
-  
-  
+   struct work_struct * work_next=(struct work_struct *)kmalloc(sizeof(struct work_struct),GFP_KERNEL);
+   
     INIT_WORK((struct work_struct*)work,my_wq_function);
 
-   queue_delayed_work(my_wq,(struct work_struct*) work,msecs_to_jiffies(1000/20));
+    queue_delayed_work(my_wq,(struct work_struct*) work_next,msecs_to_jiffies(1000/20));
    
 }
 
