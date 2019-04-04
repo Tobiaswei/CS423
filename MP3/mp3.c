@@ -87,9 +87,9 @@ void static _delete_queue(void){
 
 }
 
-void Registration(unsigned int pid){
+void Registration(int pid){
 
-  if(DEBUG) printk("PID : %lu register\n");
+  if(DEBUG) printk("PID : %d register\n",pid);
 
   if(size_list==0){
 
@@ -127,9 +127,9 @@ void Registration(unsigned int pid){
 
 }
 
-void Unregistration(unsigned int pid){
+void Unregistration(int pid){
 
-    if(DEBUG) printk("PID : %lu Unregister\n");
+    if(DEBUG) printk("PID : %d Unregister\n",pid);
 
     static struct list_head *pos,*q;
 
