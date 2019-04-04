@@ -39,7 +39,7 @@ static spinlock_t my_lock;// spin_lock
 static struct proc_dir_entry *proc_dir;
 static struct proc_dir_entry *proc_entry;
 
-struct work_struct * work=NULL;
+//struct work_struct * work=NULL;
 static struct workqueue_struct *my_wq=NULL; //workqueu declaration 
 struct kmem_cache * kcache=NULL;
 
@@ -95,7 +95,7 @@ void Registration(int pid){
 
     _init_queue();
 
-    work=(struct work_struct *)kmalloc(sizeof(struct work_struct),GFP_KERNEL);
+ struct work_struct * work=(struct work_struct *)kmalloc(sizeof(struct work_struct),GFP_KERNEL);
     INIT_WORK((struct work_struct*)work,my_wq_function);
 
     queue_delayed_work(my_wq,(struct work_struct *)work,msecs_to_jiffies(1000/20));
@@ -270,7 +270,7 @@ static void my_wq_function(struct work_struct *work){
     if(DEBUG) printk("1.%lu 2.%lu 3%lu 4%lu\n",jiffies, min_sum,maj_sum,cpu_sum);
    //flush_workqueue(my_wq);
 
-  // struct work_struct *work=(struct work_struct *)kmalloc(sizeof(struct work_struct),GFP_KERNEL);
+    work=(struct work_struct *)kmalloc(sizeof(struct work_struct),GFP_KERNEL);
    if(work!=NULL)
    {
    INIT_WORK((struct work_struct*)work,my_wq_function);
