@@ -38,7 +38,8 @@ static struct proc_dir_entry *proc_dir;
 static struct proc_dir_entry *proc_entry;
 
 static void my_wq_function(struct work_struct *work);
-//DECLARE_DELAYED_WORK(work,my_wq_function);
+
+DECLARE_DELAYED_WORK(work,my_wq_function);
 //struct work_struct * work=NULL;
 static struct workqueue_struct *my_wq=NULL; //workqueu declaration 
 struct kmem_cache * kcache=NULL;
@@ -93,12 +94,12 @@ void Registration(int pid){
 
   if(size_list==0){
 
- //   _init_queue();
+   if(DEBUG) printk("The first process reg!\n");
 
- struct work_struct * work=(struct work_struct *)kmalloc(sizeof(struct work_struct),GFP_KERNEL);
-   INIT_WORK((struct work_struct*)work,my_wq_function);
+  // struct delayed_work * work=(struct delayed_work *)kmalloc(sizeof(struct delayed_work),GFP_KERNEL);
+  // INIT_DELAYED_WORK((struct delayed_work*)work,my_wq_function);
 
-    queue_delayed_work(my_wq,(struct work_struct * )work,msecs_to_jiffies(1000/20));
+    queue_delayed_work(my_wq,&work,msecs_to_jiffies(1000/20));
 
   }
 
@@ -270,11 +271,11 @@ static void my_wq_function(struct work_struct *work){
     if(DEBUG) printk("1.%lu 2.%lu 3%lu 4%lu\n",jiffies, min_sum,maj_sum,cpu_sum);
    //flush_workqueue(my_wq);
 
-   struct work_struct * work_next=(struct work_struct *)kmalloc(sizeof(struct work_struct),GFP_KERNEL);
+  // struct work_struct * work_next=(struct work_struct *)kmalloc(sizeof(struct work_struct),GFP_KERNEL);
    
-    INIT_WORK((struct work_struct*)work,my_wq_function);
+   // INIT_DELAYED__WORK((struct delayed_work*)work,my_wq_function);
 
-    queue_delayed_work(my_wq,(struct work_struct*) work_next,msecs_to_jiffies(1000/20));
+    queue_delayed_work(my_wq, &work,msecs_to_jiffies(1000/20));
    
 }
 
