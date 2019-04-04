@@ -39,6 +39,8 @@ static spinlock_t my_lock;// spin_lock
 static struct proc_dir_entry *proc_dir;
 static struct proc_dir_entry *proc_entry;
 
+static void my_wq_function(struct work_struct *work);
+//DECLARE_DELAYED_WORK(work,my_wq_function);
 //struct work_struct * work=NULL;
 static struct workqueue_struct *my_wq=NULL; //workqueu declaration 
 struct kmem_cache * kcache=NULL;
@@ -93,12 +95,12 @@ void Registration(int pid){
 
   if(size_list==0){
 
-    _init_queue();
+ //   _init_queue();
 
  struct work_struct * work=(struct work_struct *)kmalloc(sizeof(struct work_struct),GFP_KERNEL);
-    INIT_WORK((struct work_struct*)work,my_wq_function);
+   INIT_WORK((struct work_struct*)work,my_wq_function);
 
-    queue_delayed_work(my_wq,(struct work_struct *)work,msecs_to_jiffies(1000/20));
+    queue_delayed_work(my_wq,(struct work_struct * )work,msecs_to_jiffies(1000/20));
 
   }
 
@@ -270,13 +272,13 @@ static void my_wq_function(struct work_struct *work){
     if(DEBUG) printk("1.%lu 2.%lu 3%lu 4%lu\n",jiffies, min_sum,maj_sum,cpu_sum);
    //flush_workqueue(my_wq);
 
-    work=(struct work_struct *)kmalloc(sizeof(struct work_struct),GFP_KERNEL);
-   if(work!=NULL)
-   {
-   INIT_WORK((struct work_struct*)work,my_wq_function);
+//    work=(struct work_struct *)kmalloc(sizeof(struct work_struct),GFP_KERNEL);
+  
+  
+    INIT_WORK((struct work_struct*)work,my_wq_function);
 
-   queue_delayed_work(my_wq,(struct work_struct *)work,msecs_to_jiffies(1000/20));
-   }
+   queue_delayed_work(my_wq,(struct work_struct*) work,msecs_to_jiffies(1000/20));
+   
 }
 
 static const struct file_operations mp3_file={
@@ -408,7 +410,9 @@ void __exit mp3_exit(void)
 
     spin_unlock(&my_lock);
 
-   _delete_queue();
+  //  cancel_delayed_work(&work);
+
+    _delete_queue();
 
    if(kcache) kmem_cache_destroy(kcache);
    // kthread_stop(dispatcher);
