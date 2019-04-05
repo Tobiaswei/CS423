@@ -397,7 +397,7 @@ void __exit mp3_exit(void)
 
     unregister_chrdev(100,"mp3");
 
-    spin_lock(&my_lock);
+    /*spin_lock(&my_lock);
 
     list_for_each_safe(pos,q,&new_list){
   
@@ -411,11 +411,9 @@ void __exit mp3_exit(void)
     }
 
     spin_unlock(&my_lock);
-
-   // _delete_queue();
-
+    */
    // cancel_delayed_work(&delayed_work);
-   // flush_workqueue(my_wq);
+     flush_workqueue(my_wq);
 
      destroy_workqueue(my_wq);
 
