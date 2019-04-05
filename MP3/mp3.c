@@ -158,7 +158,6 @@ void Unregistration(int pid){
 
     if(size_list==0){
      //delete the work;
-      // _delete_queue();
        cancel_delayed_work(&delayed_work);
 
        flush_workqueue(my_wq);
@@ -314,15 +313,11 @@ static int my_mmap(struct file *filp, struct vm_area_struct *vma){
 
         pfn=vmalloc_to_pfn(buff_add);
 
-       // buff_add+=PAGE_S/sizeof(unsigned long);
         buff_add+=PAGE_SIZE;
 
         int ret=remap_pfn_range(vma,map_start_addr,pfn,PAGE_SIZE,vma->vm_page_prot);
-
-        // map_start_addr+=(unsigned long)((vma->vm_end)-(vma->vm_start))/PAGE_NUM;
          map_start_addr+=PAGE_SIZE;
 
-        //if(DEBUG && i%32==0) printk()
         if (ret < 0) 
         {
              printk("could not map the address area\n");
@@ -397,7 +392,7 @@ void __exit mp3_exit(void)
 
     unregister_chrdev(100,"mp3");
 
-    /*spin_lock(&my_lock);
+    spin_lock(&my_lock);
 
     list_for_each_safe(pos,q,&new_list){
   
@@ -410,13 +405,11 @@ void __exit mp3_exit(void)
        kmem_cache_free(kcache,tmp);
     }
 
-    spin_unlock(&my_lock);
-    */
+     spin_unlock(&my_lock);
+   
    // cancel_delayed_work(&delayed_work);
-     flush_workqueue(my_wq);
-
-     destroy_workqueue(my_wq);
-
+    // flush_workqueue(my_wq);
+    // destroy_workqueue(my_wq);
    if(kcache) kmem_cache_destroy(kcache);
    // kthread_stop(dispatcher);
    printk(KERN_ALERT "MP3 MODULE UNLOADED\n");
