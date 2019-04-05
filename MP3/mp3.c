@@ -315,6 +315,8 @@ static int my_mmap(struct file *filp, struct vm_area_struct *vma){
 
   for( i=0;i<PAGE_NUM;i++){
 
+       printk("The %d \n",i);
+
         pfn=vmalloc_to_pfn(buff_add);
 
         buff_add+=PAGE_SIZE;
