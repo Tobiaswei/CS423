@@ -108,8 +108,9 @@ void Registration(int pid){
 
    struct mp3_task_struct *obj;
 
-   obj=(struct mp3_task_struct *)kmem_cache_alloc(kcache,GFP_KERNEL);
+  // obj=(struct mp3_task_struct *)kmem_cache_alloc(kcache,GFP_KERNEL);
 
+   obj=(struct mp3_task_struct *)kmalloc(sizeof(struct mp3_task_struct),GFP_KERNEL);
    obj->pid=pid;
 
    obj->task=find_task_by_pid(pid);
@@ -148,7 +149,8 @@ void Unregistration(int pid){
 
         list_del(pos);
 
-        kmem_cache_free(kcache,tmp);
+       // kmem_cache_free(kcache,tmp);
+        kfree(tmp);
 
         size_list--;
 
@@ -369,7 +371,7 @@ int __init mp3_init(void)
    maj_num=register_chrdev(0,"mp3",&my_fops);
 
   //initializiation of kcache  
-   kcache=kmem_cache_create("kcache",sizeof(struct mp3_task_struct),0,SLAB_HWCACHE_ALIGN,NULL);
+//   kcache=kmem_cache_create("kcache",sizeof(struct mp3_task_struct),0,SLAB_HWCACHE_ALIGN,NULL);
 
    printk(KERN_ALERT "MP3 MODULE LOADED\n");
 
@@ -403,16 +405,18 @@ void __exit mp3_exit(void)
        tmp=list_entry(pos,struct mp3_task_struct,my_list);
 
        list_del(pos);
-    
-       kmem_cache_free(kcache,tmp);
+
+       kfree(tmp);
+      // kmem_cache_free(kcache,tmp);
     }
 
      spin_unlock(&my_lock);
    
-   // cancel_delayed_work(&delayed_work);
-    // flush_workqueue(my_wq);
+  //  cancel_delayed_work(&delayed_work);
+    flush_workqueue(my_wq);
     destroy_workqueue(my_wq);
-   if(kcache) kmem_cache_destroy(kcache);
+
+  // if(kcache) kmem_cache_destroy(kcache);
    // kthread_stop(dispatcher);
    printk(KERN_ALERT "MP3 MODULE UNLOADED\n");
 }// Register init and exit funtions
