@@ -303,6 +303,8 @@ static int my_release(struct inode *inode, struct file *file){
 
 static int my_mmap(struct file *filp, struct vm_area_struct *vma){
 
+  if(DEBUG) printk("MMAP function!\n");
+
   unsigned long * buff_add=buff;
 
   unsigned long pfn;
@@ -365,10 +367,9 @@ int __init mp3_init(void)
    //void cdev_init(struct cdev * cdev ,struct file *fops);
 
    //int cdev_add(struct cdev *dev,dev_t num,unsigned int count);
-
-     cdev_init(&mp3_cdev,&my_fops);
+    // cdev_init(&mp3_cdev,&my_fops);
   // cdev_add(&mp3_cdev)
-   maj_num=register_chrdev(0,"mp3",&my_fops);
+   register_chrdev(100,"node",&my_fops);
 
   //initializiation of kcache  
 //   kcache=kmem_cache_create("kcache",sizeof(struct mp3_task_struct),0,SLAB_HWCACHE_ALIGN,NULL);
@@ -394,7 +395,7 @@ void __exit mp3_exit(void)
 
     vfree(buff);
 
-    unregister_chrdev(maj_num,"mp3");
+    unregister_chrdev(100,"node");
 
     spin_lock(&my_lock);
 
