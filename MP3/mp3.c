@@ -310,12 +310,12 @@ static int my_mmap(struct file *filp, struct vm_area_struct *vma){
   unsigned long pfn;
 
   unsigned long map_start_addr=vma->vm_start;
+  unsigned long len=vma->vm_end-vma->vm_start;
+  int i=0;
 
-  int i;
+  while(len>0){
 
-  for( i=0;i<PAGE_NUM;i++){
-
-       printk("The %d \n",i);
+       printk("The %d \n",i++);
 
         pfn=vmalloc_to_pfn(buff_add);
 
@@ -323,7 +323,8 @@ static int my_mmap(struct file *filp, struct vm_area_struct *vma){
 
         int ret=remap_pfn_range(vma,map_start_addr,pfn,PAGE_SIZE,vma->vm_page_prot);
          map_start_addr+=PAGE_SIZE;
-
+         
+         len-=PAGE_SIZE;
         if (ret < 0) 
         {
              printk("could not map the address area\n");
@@ -414,11 +415,9 @@ void __exit mp3_exit(void)
     }
 
      spin_unlock(&my_lock);
-   
   //  cancel_delayed_work(&delayed_work);
     flush_workqueue(my_wq);
     destroy_workqueue(my_wq);
-
   // if(kcache) kmem_cache_destroy(kcache);
    // kthread_stop(dispatcher);
    printk(KERN_ALERT "MP3 MODULE UNLOADED\n");
