@@ -414,10 +414,10 @@ void __exit mp3_exit(void)
 
    // _delete_queue();
 
-    cancel_delayed_work(&delayed_work);
-    flush_workqueue(my_wq);
+   // cancel_delayed_work(&delayed_work);
+   // flush_workqueue(my_wq);
 
-   destroy_workqueue(my_wq);
+     destroy_workqueue(my_wq);
 
    if(kcache) kmem_cache_destroy(kcache);
    // kthread_stop(dispatcher);
