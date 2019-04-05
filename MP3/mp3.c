@@ -196,7 +196,7 @@ ssize_t mp3_write(struct file* flip, const char __user *buff,
 
         sscanf(command,"U %d",&pid);
 
-        Registration(pid);
+        Unregistration(pid);
 
     }
 
