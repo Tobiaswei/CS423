@@ -43,12 +43,13 @@ DECLARE_DELAYED_WORK(delayed_work,my_wq_function);
 //struct work_struct * work=NULL;
 static struct workqueue_struct *my_wq=NULL; //workqueu declaration 
 struct kmem_cache * kcache=NULL;
-
+static struct  cdev mp3_cdev;
 unsigned long * buff; // kernel shared buffer
 
 int size_list=0;
 
 int index=0;
+int maj_num=0;
 
 LIST_HEAD(new_list);//LIST marco to locate the head of the list
 
@@ -175,7 +176,6 @@ ssize_t mp3_write(struct file* flip, const char __user *buff,
     command= (char *) kmalloc(len+1,GFP_KERNEL);
 
     int pid;
-
 
     if(copy_from_user(command,buff,len)){
      
@@ -364,7 +364,9 @@ int __init mp3_init(void)
 
    //int cdev_add(struct cdev *dev,dev_t num,unsigned int count);
 
-   register_chrdev(100,"mp3",&my_fops);
+     cdev_init(&mp3_cdev,&my_fops);
+  // cdev_add(&mp3_cdev)
+   maj_num=register_chrdev(0,"mp3",&my_fops);
 
   //initializiation of kcache  
    kcache=kmem_cache_create("kcache",sizeof(struct mp3_task_struct),0,SLAB_HWCACHE_ALIGN,NULL);
@@ -390,7 +392,7 @@ void __exit mp3_exit(void)
 
     vfree(buff);
 
-    unregister_chrdev(100,"mp3");
+    unregister_chrdev(maj_num,"mp3");
 
     spin_lock(&my_lock);
 
@@ -409,7 +411,7 @@ void __exit mp3_exit(void)
    
    // cancel_delayed_work(&delayed_work);
     // flush_workqueue(my_wq);
-    // destroy_workqueue(my_wq);
+    destroy_workqueue(my_wq);
    if(kcache) kmem_cache_destroy(kcache);
    // kthread_stop(dispatcher);
    printk(KERN_ALERT "MP3 MODULE UNLOADED\n");
