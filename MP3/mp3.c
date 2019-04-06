@@ -352,8 +352,11 @@ int __init mp3_init(void)
    //Initialization of the kernel Buffer
    buff=(unsigned long*)vmalloc(PAGE_NUM*PAGE_SIZE);
 
-   memset(buff,0,PAGE_NUM*PAGE_SIZE);
-
+ //  memset(buff,0,PAGE_NUM*PAGE_SIZE);
+   int count=0;
+   for(;count<MAX_NUM_SAMPLES*NUM_ITEMS;count++){
+     buff[count]=-1;
+    }
    _init_queue();
 
    //void cdev_init(struct cdev * cdev ,struct file *fops);
