@@ -370,7 +370,7 @@ int __init mp3_init(void)
    //void cdev_init(struct cdev * cdev ,struct file *fops);
 
    //int cdev_add(struct cdev *dev,dev_t num,unsigned int count);
-    // cdev_init(&mp3_cdev,&my_fops);
+    cdev_init(&mp3_cdev,&my_fops);
   // cdev_add(&mp3_cdev)
    register_chrdev(100,"node",&my_fops);
 
