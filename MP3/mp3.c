@@ -26,31 +26,31 @@
 
 #define MAX_NUM_SAMPLES (20*600)
 
-#define NUM_ITEMS 4
+#define NUM_ITEMS 4   
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("yuguang2");
 MODULE_DESCRIPTION("CS-423 MP3");
 
 static spinlock_t my_lock;// spin_lock
-
+// delcare of proce_dirctory
 static struct proc_dir_entry *proc_dir;
 static struct proc_dir_entry *proc_entry;
-
+// declare of   work_queue function and work
 static void my_wq_function(struct work_struct *work);
 
 DECLARE_DELAYED_WORK(delayed_work,my_wq_function);
-//struct work_struct * work=NULL;
+
 static struct workqueue_struct *my_wq=NULL; //workqueu declaration 
+//declare of slab cache
 struct kmem_cache * kcache=NULL;
-static struct  cdev mp3_cdev;
-unsigned long * buff; // kernel shared buffer
-
+//kernel shared buffer
+unsigned long * buff;
+// size of the list
 int size_list=0;
-
+// current index of shared buffer
 int index=0;
-int maj_num=0;
-
+// start point of kernel list
 LIST_HEAD(new_list);//LIST marco to locate the head of the list
 
 typedef struct mp3_task_struct{
@@ -68,49 +68,27 @@ typedef struct mp3_task_struct{
    unsigned long cpu_usage;
 
 }mp3_task_struct;
+// create the workqueue
 
-static void my_wq_function(struct work_struct *work);//declare of the workqueue function 
 void static _init_queue(void){
 
   my_wq=create_workqueue("my_queue");
 }
-/*
-void static _delete_queue(void){
 
-  if(my_wq!=NULL){
-
-      flush_workqueue(my_wq);
-
-      destroy_workqueue(my_wq);
-
-      my_wq=NULL;
-
-  }
-
-}*/
-
+// registration function
 void Registration(int pid){
 
   if(DEBUG) printk("PID : %d register\n",pid);
 
-  if(size_list==0){
+   size_list++;//increment the size
 
-   if(DEBUG) printk("The first process reg!\n");
-
-  // struct delayed_work * work=(struct delayed_work *)kmalloc(sizeof(struct delayed_work),GFP_KERNEL);
-  // INIT_DELAYED_WORK((struct delayed_work*)work,my_wq_function);
-
-    queue_delayed_work(my_wq,&delayed_work,msecs_to_jiffies(1000/20));
-
-  }
-
-   size_list++;
+  //allocate slab memory for mp3_task_struct
 
    struct mp3_task_struct *obj;
 
-  // obj=(struct mp3_task_struct *)kmem_cache_alloc(kcache,GFP_KERNEL);
+   obj=(struct mp3_task_struct *)kmem_cache_alloc(kcache,GFP_KERNEL);
 
-   obj=(struct mp3_task_struct *)kmalloc(sizeof(struct mp3_task_struct),GFP_KERNEL);
+   //Initialize the each attributes in the agumented task_struct
    obj->pid=pid;
 
    obj->task=find_task_by_pid(pid);
@@ -122,8 +100,14 @@ void Registration(int pid){
    obj->cpu_usage=0;
 
    spin_lock(&my_lock);
-
+//add it into list
    list_add(&obj->my_list,&new_list);
+// if it is the first time to register 
+   if(size_list==1){
+   //delay the work by 1000/20 !
+    queue_delayed_work(my_wq,&delayed_work,msecs_to_jiffies(1000/20));
+    if(DEBUG) printk("workqueue create!");
+    }
 
    spin_unlock(&my_lock);
 
@@ -137,7 +121,7 @@ void Unregistration(int pid){
     static struct list_head *pos,*q;
 
     spin_lock(&my_lock);
-
+//clear and free memory when unreg
     list_for_each_safe(pos,q,&new_list){
 
     static struct mp3_task_struct *tmp;  
@@ -149,22 +133,20 @@ void Unregistration(int pid){
 
         list_del(pos);
 
-       // kmem_cache_free(kcache,tmp);
-        kfree(tmp);
+        kmem_cache_free(kcache,tmp);
 
         size_list--;
-
+    
        }  
     }
-    spin_unlock(&my_lock);
-
-
+  // IF the linked list is empty clear the unfinished work 
     if(size_list==0){
      //delete the work;
-       cancel_delayed_work(&delayed_work);
+          cancel_delayed_work(&delayed_work);
 
-       flush_workqueue(my_wq);
-    }
+          flush_workqueue(my_wq);
+    }  
+  spin_unlock(&my_lock);
 
 }
 
@@ -183,7 +165,7 @@ ssize_t mp3_write(struct file* flip, const char __user *buff,
      
          return -ENOSPC;
     }
-
+// choose register or unregister
     if(command[0]=='R'){
 
         sscanf(command,"R %d",&pid);
@@ -199,7 +181,7 @@ ssize_t mp3_write(struct file* flip, const char __user *buff,
         Unregistration(pid);
 
     }
-
+    kfree(command);
     return len;
 }
 
@@ -244,6 +226,8 @@ static void my_wq_function(struct work_struct *work){
   //read from list
   list_for_each_entry(my_obj,&new_list,my_list){
 
+   //for each registered process accmulate the min_page fault and major pagefault and cpu_utilization
+
       if(index>MAX_NUM_SAMPLES*NUM_ITEMS)
       {
          printk("Save up to maximun number of samples\n");
@@ -262,23 +246,23 @@ static void my_wq_function(struct work_struct *work){
       maj_sum+=major_c;
       min_sum+=minor_c;
       cpu_sum+=(utime+stime);
+
       }
 
    spin_unlock(&my_lock);
-  
+  // write the accumlated data into shared kernel buffer;
+
+   spin_lock(&my_lock);
+
     buff[index++]=jiffies;
     buff[index++]=min_sum;
     buff[index++]=maj_sum;
     buff[index++]=cpu_sum;
 
+   spin_unlock(&my_lock);
     if(DEBUG) printk("1.%lu 2.%lu 3%lu 4%lu\n",jiffies, min_sum,maj_sum,cpu_sum);
-   //flush_workqueue(my_wq);
-
-  // struct work_struct * work_next=(struct work_struct *)kmalloc(sizeof(struct work_struct),GFP_KERNEL);
-   
-   // INIT_DELAYED__WORK((struct delayed_work*)work,my_wq_function);
-
-    queue_delayed_work(my_wq, &delayed_work,msecs_to_jiffies(1000/20));
+   // push another delayed work into workqueue keep peridically tracking the usage 
+   queue_delayed_work(my_wq, &delayed_work,msecs_to_jiffies(1000/20));
    
 }
 
@@ -292,39 +276,44 @@ static const struct file_operations mp3_file={
 
 //character device driver callback functions
 static int my_open(struct inode *inode, struct file *file){
-  if(DEBUG) printk(KERN_INFO "MP3 OPEN\n");
-  return 0;
 }
 
 static int my_release(struct inode *inode, struct file *file){
-  if(DEBUG) printk(KERN_INFO "MP3 RELEASE\n");
-  return 0;
 }
-
+// implementation of the MMAP
 static int my_mmap(struct file *filp, struct vm_area_struct *vma){
 
   if(DEBUG) printk("MMAP function!\n");
 
-  unsigned long * buff_add=buff;
+  char * buff_add; //        pay attention there should be char *
 
-  unsigned long pfn;
+  unsigned long pfn;  // page frame number
 
-  unsigned long map_start_addr=vma->vm_start;
-  unsigned long len=vma->vm_end-vma->vm_start;
+  unsigned long map_start_addr=vma->vm_start; // virtual memory
   int i=0;
+// all the staff type shoudl be transferred into char*!!!!!!!!!
+  buff_add=(char *)buff;
 
-  while(len>0){
+/*iterate all 128 page frames one by one 
+the core of the MMAP
+ 1.get the vmalloc or kmalloc allocated memory in pysical
 
-       printk("The %d \n",i++);
+ 2.remap it into user spacer/user virtual memory however, the physical has to be continous 
 
+    the feature of remap_pfn_range only map continous phyiscal memory
+    the kmalloc allocate contionus however the vmalloc not contigious in phyiscla memory but page continous !
+
+*/
+  for(;i<PAGE_NUM;i++){
+
+       printk("The %d \n",i);
+ 
         pfn=vmalloc_to_pfn(buff_add);
 
-        buff_add+=PAGE_SIZE;
-
-        int ret=remap_pfn_range(vma,map_start_addr,pfn,PAGE_SIZE,vma->vm_page_prot);
+        buff_add+=PAGE_SIZE;//buff_add(char*)+ PAGES_SIZE just fit ecah byte
+      int ret=remap_pfn_range(vma,map_start_addr,pfn,PAGE_SIZE,vma->vm_page_prot);
          map_start_addr+=PAGE_SIZE;
          
-         len-=PAGE_SIZE;
         if (ret < 0) 
         {
              printk("could not map the address area\n");
@@ -370,12 +359,10 @@ int __init mp3_init(void)
    //void cdev_init(struct cdev * cdev ,struct file *fops);
 
    //int cdev_add(struct cdev *dev,dev_t num,unsigned int count);
-    cdev_init(&mp3_cdev,&my_fops);
-  // cdev_add(&mp3_cdev)
    register_chrdev(100,"node",&my_fops);
 
   //initializiation of kcache  
-//   kcache=kmem_cache_create("kcache",sizeof(struct mp3_task_struct),0,SLAB_HWCACHE_ALIGN,NULL);
+   kcache=kmem_cache_create("kcache",sizeof(struct mp3_task_struct),0,SLAB_HWCACHE_ALIGN,NULL);
 
    printk(KERN_ALERT "MP3 MODULE LOADED\n");
 
@@ -396,10 +383,10 @@ void __exit mp3_exit(void)
 
     proc_remove(proc_dir);// rm the directory 
 
-    vfree(buff);
+    vfree(buff); // free the shared kernel buff 
 
     unregister_chrdev(100,"node");
-
+  //free each element in the linked list
     spin_lock(&my_lock);
 
     list_for_each_safe(pos,q,&new_list){
@@ -410,17 +397,16 @@ void __exit mp3_exit(void)
 
        list_del(pos);
 
-       kfree(tmp);
-      // kmem_cache_free(kcache,tmp);
+       kmem_cache_free(kcache,tmp);
     }
 
-     spin_unlock(&my_lock);
-  //  cancel_delayed_work(&delayed_work);
+    spin_unlock(&my_lock);
+// destory the workqueue!
     flush_workqueue(my_wq);
     destroy_workqueue(my_wq);
-  // if(kcache) kmem_cache_destroy(kcache);
-   // kthread_stop(dispatcher);
-   printk(KERN_ALERT "MP3 MODULE UNLOADED\n");
+//destroy the kcache!
+    if(kcache) kmem_cache_destroy(kcache);
+    printk(KERN_ALERT "MP3 MODULE UNLOADED\n");
 }// Register init and exit funtions
 
 module_init(mp3_init);
