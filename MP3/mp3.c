@@ -341,8 +341,8 @@ static int my_mmap(struct file *filp, struct vm_area_struct *vma){
 static const struct file_operations my_fops={
 
  .owner=THIS_MODULE,
- .open=my_open,
- .release=my_release,
+ .open=NULL,
+ .release=NULL,
  .mmap=my_mmap,
 
 };
