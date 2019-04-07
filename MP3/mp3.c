@@ -228,13 +228,6 @@ static void my_wq_function(struct work_struct *work){
 
    //for each registered process accmulate the min_page fault and major pagefault and cpu_utilization
 
-      if(index>MAX_NUM_SAMPLES*NUM_ITEMS)
-      {
-         printk("Save up to maximun number of samples\n");
-
-         return;
-      }
-
       int ret=get_cpu_use(my_obj->pid,&minor_c,&major_c,&utime,&stime);
 
       if(ret==-1)
@@ -252,6 +245,7 @@ static void my_wq_function(struct work_struct *work){
    spin_unlock(&my_lock);
   // write the accumlated data into shared kernel buffer;
 
+   // circular buffer
    spin_lock(&my_lock);
 
     buff[index++]=jiffies;
@@ -259,6 +253,7 @@ static void my_wq_function(struct work_struct *work){
     buff[index++]=maj_sum;
     buff[index++]=cpu_sum;
 
+   index=index%(NUM_ITEMS*MAX_NUM_SAMPLES);
    spin_unlock(&my_lock);
     if(DEBUG) printk("1.%lu 2.%lu 3%lu 4%lu\n",jiffies, min_sum,maj_sum,cpu_sum);
    // push another delayed work into workqueue keep peridically tracking the usage 
