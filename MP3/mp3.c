@@ -106,6 +106,11 @@ void Registration(int pid){
    //delay the work by 1000/20 !
     queue_delayed_work(my_wq,&delayed_work,msecs_to_jiffies(1000/20));
     if(DEBUG) printk("workqueue create!");
+   int count=0;
+   for(;count<MAX_NUM_SAMPLES*NUM_ITEMS;count++){
+     buff[count]=-1;
+    }
+ 
     }
 
    spin_unlock(&my_lock);
@@ -241,6 +246,10 @@ static void my_wq_function(struct work_struct *work){
       min_sum+=minor_c;
       cpu_sum+=(utime+stime);
 
+   
+      my_obj->major_count+=major_c;
+      my_obj->minor_count+=minor_c;
+      my_obj->cpu_usage+=(utime+stime);
       }
 
    spin_unlock(&my_lock);
