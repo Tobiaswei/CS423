@@ -1,0 +1,7 @@
+load_mod.sh  make and load mp3 moudle
+
+case1_1.sh first test case in case1
+
+case2_2.sh second test case in case2
+
+test2.sh n   n cocurrent process 
