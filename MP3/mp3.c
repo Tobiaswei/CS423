@@ -106,11 +106,11 @@ void Registration(int pid){
    //delay the work by 1000/20 !
     queue_delayed_work(my_wq,&delayed_work,msecs_to_jiffies(1000/20));
     if(DEBUG) printk("workqueue create!");
-   int count=0;
+/*   int count=0;
    for(;count<MAX_NUM_SAMPLES*NUM_ITEMS;count++){
      buff[count]=-1;
     }
- 
+ */
     }
 
    spin_unlock(&my_lock);
@@ -254,7 +254,6 @@ static void my_wq_function(struct work_struct *work){
 
    spin_unlock(&my_lock);
   // write the accumlated data into shared kernel buffer;
-
    // circular buffer
    spin_lock(&my_lock);
 
