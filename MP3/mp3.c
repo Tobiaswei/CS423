@@ -1,5 +1,4 @@
 #define LINUX
-
 #include <asm/uaccess.h>//(copy_from_user)
 #include <linux/module.h>
 #include <linux/kernel.h>
@@ -145,6 +144,8 @@ void Unregistration(int pid){
           cancel_delayed_work(&delayed_work);
 
           flush_workqueue(my_wq);
+
+          index=0;
     }  
   spin_unlock(&my_lock);
 
